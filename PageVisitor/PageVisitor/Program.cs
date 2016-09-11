@@ -22,7 +22,9 @@ namespace PageVisitor
                 
             }
 
-            Console.WriteLine("Для завершения нажмите любую кнопку");
+            PrintContacts();
+            PrintPressAnyKey();
+            
             Console.ReadKey();
             
         }
@@ -30,6 +32,18 @@ namespace PageVisitor
         static bool ShoudCloseBrowser(string[] args)
         {
             return args.Contains("-close");
+        }
+
+        static void PrintContacts()
+        {
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.WriteLine("Контакты разработчика \n Максим Максимов \n+79506113772\n fokusfm@yandex.ru \nhttps://vk.com/maksimov.maksim");
+        }
+
+        static void PrintPressAnyKey()
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine("\n\n\nДля завершения нажмите любую кнопку");
         }
     }
 }

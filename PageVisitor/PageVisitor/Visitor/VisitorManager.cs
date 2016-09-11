@@ -57,8 +57,6 @@ namespace PageVisitor.Visitor
             catch (Exception ex)
             {
                 Logger.WriteError(ex.ToString());
-                _visitor.Close();
-                ItitPageVisitor();
             }
         }
 
