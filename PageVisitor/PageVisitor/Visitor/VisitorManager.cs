@@ -36,12 +36,14 @@ namespace PageVisitor.Visitor
             {
                 var url = "https://yandex.ru/search/?text=" + _settings.Request;
                 _visitor.NavigateToUrl(url);
-                var elementWithOurAdvertisement =
-                    _visitor.GetElementWithOurAdvertisement(_settings.Words, _settings.OurSite);
-                if (elementWithOurAdvertisement != null)
+                var elementsWithOurAdvertisement =
+                    _visitor.GetElementsWithOurAdvertisement(_settings.Words, _settings.OurSite);
+                if (elementsWithOurAdvertisement.Count != 0)
                 {
-                    _visitor.HightlightTheElement(elementWithOurAdvertisement);
-                    var screenShotPath = _visitor.MakeScreenshot();
+                    elementsWithOurAdvertisement
+                        .ForEach(_visitor.HightlightTheElement);
+
+                    _visitor.MakeScreenshot();
 
                     var msg = String.Format("Объявление найдено. Скриншот сохранен в папку ScreenShots \n\n\n");
                     Logger.WriteGreen(msg);
@@ -55,9 +57,14 @@ namespace PageVisitor.Visitor
             catch (Exception ex)
             {
                 Logger.WriteError(ex.ToString());
-                _driver.Close();
+                _visitor.Close();
                 ItitPageVisitor();
             }
+        }
+
+        public void Close()
+        {
+            _visitor.Close();
         }
     }
 }

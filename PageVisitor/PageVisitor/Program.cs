@@ -15,7 +15,21 @@ namespace PageVisitor
             manager.Start();
 
             Console.ForegroundColor = ConsoleColor.White;
+
+            if (ShoudCloseBrowser(args))
+            {
+                manager.Close();
+                
+            }
+
             Console.WriteLine("Для завершения нажмите любую кнопку");
+            Console.ReadKey();
+            
+        }
+
+        static bool ShoudCloseBrowser(string[] args)
+        {
+            return args.Contains("-close");
         }
     }
 }

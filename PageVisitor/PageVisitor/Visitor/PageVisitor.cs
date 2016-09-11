@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -23,9 +24,9 @@ namespace PageVisitor.Visitor
 
         private bool ElementContainsSiteAndWords(string itemHtml, string ourSite, string words)
         {
-            itemHtml = itemHtml.ToLower();
-            ourSite = ourSite.ToLower();
-            words = words.ToLower();
+            itemHtml = itemHtml.ToLower().Trim();
+            ourSite = ourSite.ToLower().Trim();
+            words = words.ToLower().Trim();
 
             if (!itemHtml.Contains(ourSite))
                 return false;
@@ -35,14 +36,14 @@ namespace PageVisitor.Visitor
                 .Any(w => itemHtml.Contains(w));
         }
 
-        public IWebElement GetElementWithOurAdvertisement(string words, string ourSite)
+        public List<IWebElement> GetElementsWithOurAdvertisement(string words, string ourSite)
         {
-            var requestItems = _driver.FindElements(By.CssSelector(".serp-item"));
-            var firstItem = 
-                requestItems
-                .FirstOrDefault(i => ElementContainsSiteAndWords(i.Text, ourSite, words));
+            var requestItems = _driver
+                .FindElements(By.CssSelector(".serp-item"))
+                .Where(i => ElementContainsSiteAndWords(i.Text, ourSite, words))
+                .ToList();
 
-            return firstItem ;
+            return requestItems;
         }
 
         public string MakeScreenshot()
@@ -64,6 +65,11 @@ namespace PageVisitor.Visitor
         {
             var js = (IJavaScriptExecutor)_driver;
             js.ExecuteScript("arguments[0].setAttribute('style', 'border:2px solid red')", elementWithOurAdvertisement);
+        }
+
+        public void Close()
+        {
+            _driver.Close();
         }
     }
 }
