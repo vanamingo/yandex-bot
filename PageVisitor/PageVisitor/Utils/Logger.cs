@@ -5,24 +5,36 @@ namespace PageVisitor.Utils
 {
     public class Logger
     {
+        public static void WriteWhite(string msg)
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+            WriteLog(msg);
+        }
         public static void WriteRed(string msg)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(msg);
+            WriteLog(msg);
         }
         public static void WriteGreen(string msg)
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(msg);
+            WriteLog(msg);
         }
+
+        private static void WriteLog(string msg)
+        {
+            Console.WriteLine(msg);
+
+            if (GlobalSettings.VisitorSettings.WriteLogs)
+            {
+                File.WriteAllText(GlobalSettings.LoggerFilePath, msg);
+            }
+        }
+
         public static void WriteError(string msg)
         {
-            //var path = @"E:\MAXON\MolotokParse\logCheck.txt";
-            //msg = "\n --- " + DateTime.Now.ToLongTimeString() + "--------- \n" + msg;
-            //File.AppendAllText(path, msg);
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("*-------- Ошибка --------*");
-            Console.WriteLine(msg);
+            WriteLog("*-------- Ошибка --------*\n" + msg);
         }
     }
 }

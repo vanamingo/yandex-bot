@@ -87,6 +87,7 @@
     <Compile Include="Utils\Logger.cs" />
     <Compile Include="Visitor\PageVisitor.cs" />
     <Compile Include="Visitor\QueryHandler.cs" />
+    <Compile Include="Visitor\QueriesManager.cs" />
     <Compile Include="WebDriverWrapper\WebDriverProvider.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -12,54 +12,56 @@ namespace PageVisitor.Visitor
 {
     public class QueryHandler
     {
+        private readonly QueryElement _query;
         private PageVisitor _visitor;
         private IWebDriver _driver;
-        private VisitorSettings _settings;
 
-        private void ItitPageVisitor()
+        public QueryHandler(QueryElement query)
+        {
+            _query = query;
+        }
+
+        private void InitPageVisitor()
         {
             _driver = WebDriverProvider.GetWebDriver();
             _visitor = new PageVisitor(_driver);
         }
 
-        private void ItitSettings()
+        public void HandleQuery()
         {
-            Configuration cfg = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            _settings = (VisitorSettings) cfg.Sections["VisitorSettings"];
-        }
-
-        public void Start()
-        {
-            ItitSettings();
-            ItitPageVisitor();
             try
             {
-                /*var url = "https://yandex.ru/search/?text=" + _settings.Request;
+                Logger.WriteWhite("Обработка: " + _query.Query);
+                InitPageVisitor();
+
+                var url = "https://yandex.ru/search/?text=" + _query.Query;
                 _visitor.NavigateToUrl(url);
+
                 var elementsWithOurAdvertisement =
-                    _visitor.GetElementsWithOurAdvertisement(_settings.Words, _settings.OurSite);
+                    _visitor.GetElementsWithOurAdvertisement(_query);
+
                 if (elementsWithOurAdvertisement.Count != 0)
                 {
                     elementsWithOurAdvertisement
                         .ForEach(_visitor.HightlightTheElement);
 
-                    _visitor.MakeScreenshot();
+                    _visitor.MakeScreenshot(_query);
 
-                    var msg = String.Format("Объявление найдено. Скриншот сохранен в папку ScreenShots \n\n\n");
-                    Logger.WriteGreen(msg);
+                    Logger.WriteGreen("Объявление найдено");
                 }
                 else
                 {
                     var msg = String.Format("Объявление не найдено.");
                     Logger.WriteRed(msg);
-                }*/
+                }
+
+                Close();
             }
             catch (Exception ex)
             {
                 Logger.WriteError(ex.ToString());
             }
         }
-
         public void Close()
         {
             _visitor.Close();

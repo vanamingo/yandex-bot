@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PageVisitor.Settings;
 using PageVisitor.Visitor;
 
 namespace PageVisitor
@@ -11,27 +14,39 @@ namespace PageVisitor
     {
         static void Main(string[] args)
         {
-            var manager = new VisitorManager();
-            manager.Start();
-
-            Console.ForegroundColor = ConsoleColor.White;
-
-            if (ShoudCloseBrowser(args))
+            InitSettings();
+            if (GlobalSettings.VisitorSettings.WriteLogs)
             {
-                manager.Close();
-                
+                ItitLogFile();
             }
+
+            var manager = new QueriesManager();
+            manager.HandleQueries();
 
             PrintContacts();
             PrintPressAnyKey();
-            
+
             Console.ReadKey();
-            
         }
 
-        static bool ShoudCloseBrowser(string[] args)
+        private static void InitSettings()
         {
-            return args.Contains("-close");
+            Configuration cfg = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            GlobalSettings.VisitorSettings = (VisitorSettings)cfg.Sections["VisitorSettings"];
+        }
+
+        private static void ItitLogFile()
+        {
+            var loggerDirectory = "Logs";
+            if (!Directory.Exists(loggerDirectory))
+            {
+                Directory.CreateDirectory(loggerDirectory);
+            }
+
+            var loggerFilePath = Path.Combine(loggerDirectory, DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + "-log.txt");
+            File.Create(loggerFilePath);
+
+            GlobalSettings.LoggerFilePath = loggerFilePath;
         }
 
         static void PrintContacts()
@@ -45,5 +60,12 @@ namespace PageVisitor
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("\n\n\nДля завершения нажмите любую кнопку");
         }
+    }
+
+    public class GlobalSettings
+    {
+        // Глобальные переменные - зло. Я осознаю, что их лучше избегать. 
+        public static string LoggerFilePath { get; set; }
+        public static VisitorSettings VisitorSettings { get; set; }
     }
 }

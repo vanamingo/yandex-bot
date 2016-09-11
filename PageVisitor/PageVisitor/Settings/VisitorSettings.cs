@@ -6,17 +6,25 @@ namespace PageVisitor.Settings
 {
     public class VisitorSettings : ConfigurationSection
     {
-        [ConfigurationProperty("OurSite")]
-        public string OurSite
+        [ConfigurationProperty("WriteLogs")]
+        public bool WriteLogs
         {
-            get { return ((string)(base["OurSite"])); }
-            set { base["OurSite"] = value; }
+            get
+            {
+                return (bool)base["WriteLogs"]; 
+                
+            }
+            set
+            {
+                base["WriteLogs"] = value.ToString(); 
+                
+            }
         }
 
         [ConfigurationProperty("DelayInSeconds")]
-        public string DelayInSeconds
+        public int DelayInSeconds
         {
-            get { return ((string)(base["DelayInSeconds"])); }
+            get { return (int)base["DelayInSeconds"]; }
             set { base["DelayInSeconds"] = value; }
         }
         [ConfigurationProperty("Queries")]
@@ -59,6 +67,13 @@ namespace PageVisitor.Settings
         {
             get { return ((string)(base["Folder"])); }
             set { base["Folder"] = value; }
+        }
+
+        [ConfigurationProperty("OurSite")]
+        public string OurSite
+        {
+            get { return ((string)(base["OurSite"])); }
+            set { base["OurSite"] = value; }
         }
     }
 }

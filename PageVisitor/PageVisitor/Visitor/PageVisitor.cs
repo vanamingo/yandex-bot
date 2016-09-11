@@ -5,6 +5,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using OpenQA.Selenium;
+using PageVisitor.Settings;
 
 namespace PageVisitor.Visitor
 {
@@ -22,42 +23,43 @@ namespace PageVisitor.Visitor
             _driver.Navigate().GoToUrl(url);
         }
 
-        private bool ElementContainsSiteAndWords(string itemHtml, string ourSite, string words)
+        private bool ElementContainsSiteAndWords(string itemHtml, QueryElement query)
         {
             itemHtml = itemHtml.ToLower().Trim();
-            ourSite = ourSite.ToLower().Trim();
-            words = words.ToLower().Trim();
+            var ourSite = query.OurSite.ToLower().Trim();
 
-            if (!itemHtml.Contains(ourSite))
-                return false;
-
-            return words
-                .Split('|')
-                .Any(w => itemHtml.Contains(w));
+            return itemHtml.Contains(ourSite);
         }
 
-        public List<IWebElement> GetElementsWithOurAdvertisement(string words, string ourSite)
+        public List<IWebElement> GetElementsWithOurAdvertisement(QueryElement query)
         {
             var requestItems = _driver
                 .FindElements(By.CssSelector(".serp-item"))
-                .Where(i => ElementContainsSiteAndWords(i.Text, ourSite, words))
+                .Where(i => ElementContainsSiteAndWords(i.Text, query))
                 .ToList();
 
             return requestItems;
         }
 
-        public string MakeScreenshot()
+        public string MakeScreenshot(QueryElement query)
         {
-            Screenshot ss = ((ITakesScreenshot)_driver).GetScreenshot();
-            byte[] screenshotAsByteArray = ss.AsByteArray;
+            var ss = ((ITakesScreenshot)_driver).GetScreenshot();
+            var screenshotAsByteArray = ss.AsByteArray;
 
-            if (!Directory.Exists("ScreenShots"))
+            File.WriteAllBytes(GetFilePath(query), screenshotAsByteArray);
+            return GetFilePath(query);
+        }
+
+        private static string GetFilePath(QueryElement query)
+        {
+            var directory = Path.Combine("ScreenShots", query.Folder);
+
+            if (!Directory.Exists(directory))
             {
-                Directory.CreateDirectory("ScreenShots");
+                Directory.CreateDirectory(directory);
             }
 
-            var path = "ScreenShots/" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + ".jpg";
-            File.WriteAllBytes(path, screenshotAsByteArray);
+            var path = Path.Combine(directory, DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + ".jpg");
             return path;
         }
 
