@@ -34,7 +34,7 @@ namespace PageVisitor.Visitor
             ItitPageVisitor();
             try
             {
-                var url = "https://yandex.ru/search/?text=" + _settings.Request;
+                /*var url = "https://yandex.ru/search/?text=" + _settings.Request;
                 _visitor.NavigateToUrl(url);
                 var elementsWithOurAdvertisement =
                     _visitor.GetElementsWithOurAdvertisement(_settings.Words, _settings.OurSite);
@@ -52,7 +52,7 @@ namespace PageVisitor.Visitor
                 {
                     var msg = String.Format("Объявление не найдено.");
                     Logger.WriteRed(msg);
-                }
+                }*/
             }
             catch (Exception ex)
             {
