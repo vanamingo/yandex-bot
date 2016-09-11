@@ -10,7 +10,7 @@ using PageVisitor.WebDriverWrapper;
 
 namespace PageVisitor.Visitor
 {
-    public class VisitorManager
+    public class QueryHandler
     {
         private PageVisitor _visitor;
         private IWebDriver _driver;
