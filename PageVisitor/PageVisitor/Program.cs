@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PageVisitor.Settings;
+using PageVisitor.Utils;
 using PageVisitor.Visitor;
 
 namespace PageVisitor
@@ -14,14 +15,21 @@ namespace PageVisitor
     {
         static void Main(string[] args)
         {
-            InitSettings();
-            if (GlobalSettings.VisitorSettings.WriteLogs)
+            try
             {
-                ItitLogFile();
-            }
+                InitSettings();
+                if (GlobalSettings.VisitorSettings.WriteLogs)
+                {
+                    ItitLogFile();
+                }
 
-            var manager = new QueriesManager();
-            manager.HandleQueries();
+                var manager = new QueriesManager();
+                manager.HandleQueries();
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteError(ex.ToString());
+            }
 
             PrintContacts();
             PrintPressAnyKey();
@@ -44,7 +52,7 @@ namespace PageVisitor
             }
 
             var loggerFilePath = Path.Combine(loggerDirectory, DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + "-log.txt");
-            File.Create(loggerFilePath);
+            //File.Create(loggerFilePath);
 
             GlobalSettings.LoggerFilePath = loggerFilePath;
         }

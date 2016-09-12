@@ -1,6 +1,8 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.Threading;
 using PageVisitor.Settings;
+using PageVisitor.Utils;
 
 namespace PageVisitor.Visitor
 {
@@ -26,8 +28,15 @@ namespace PageVisitor.Visitor
 
         private void HandleQuery(QueryElement query)
         {
-            var handler = new QueryHandler(query);
-            handler.HandleQuery();
+            try
+            {
+                var handler = new QueryHandler(query);
+                handler.HandleQuery();
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteError(ex.ToString());
+            }
         }
     }
 }

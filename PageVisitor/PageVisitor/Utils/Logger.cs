@@ -27,7 +27,16 @@ namespace PageVisitor.Utils
 
             if (GlobalSettings.VisitorSettings.WriteLogs)
             {
-                File.WriteAllText(GlobalSettings.LoggerFilePath, msg);
+                try
+                {
+                    File.AppendAllText(GlobalSettings.LoggerFilePath, "\n" + msg);
+                }
+                catch (Exception ex)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Запись в файл лога не доступна");
+                }
+                
             }
         }
 
