@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace PageVisitor.Utils
+namespace FrequencyPageVisitor.Utils
 {
     public class Logger
     {

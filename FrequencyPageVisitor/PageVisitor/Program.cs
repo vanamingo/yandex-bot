@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PageVisitor.Settings;
-using PageVisitor.Utils;
-using PageVisitor.Visitor;
+using FrequencyPageVisitor.Settings;
+using FrequencyPageVisitor.Utils;
+using FrequencyPageVisitor.Visitor;
 
-namespace PageVisitor
+namespace FrequencyPageVisitor
 {
     class Program
     {

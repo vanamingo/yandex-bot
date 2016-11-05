@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using FrequencyPageVisitor.Settings;
 using OpenQA.Selenium;
-using PageVisitor.Settings;
 
-namespace PageVisitor.Visitor
+namespace FrequencyPageVisitor.Visitor
 {
     public class PageVisitor
     {
@@ -77,7 +75,7 @@ namespace PageVisitor.Visitor
 
         public void AddTimeInfoToThePage()
         {
-            var timeInfo = String.Format("Время запроса: {0}", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"));
+            var timeInfo = String.Format("Время Queryа: {0}", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"));
             var script = string.Format(@"
 var myDiv = document.createElement('div');
 myDiv.innerText = '{0}';

@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Configuration;
-using System.IO;
-using System.Linq;
-using System.Threading;
+using FrequencyPageVisitor.Settings;
+using FrequencyPageVisitor.Utils;
+using FrequencyPageVisitor.WebDriverWrapper;
 using OpenQA.Selenium;
-using PageVisitor.Settings;
-using PageVisitor.Utils;
-using PageVisitor.WebDriverWrapper;
 
-namespace PageVisitor.Visitor
+namespace FrequencyPageVisitor.Visitor
 {
     public class QueryHandler
     {
         private readonly QueryElement _query;
-        private PageVisitor _visitor;
+        private FrequencyPageVisitor.Visitor.PageVisitor _visitor;
         private IWebDriver _driver;
 
         public QueryHandler(QueryElement query)
@@ -24,7 +20,7 @@ namespace PageVisitor.Visitor
         private void InitPageVisitor()
         {
             _driver = WebDriverProvider.GetWebDriver();
-            _visitor = new PageVisitor(_driver);
+            _visitor = new FrequencyPageVisitor.Visitor.PageVisitor(_driver);
         }
 
         public void HandleQuery()

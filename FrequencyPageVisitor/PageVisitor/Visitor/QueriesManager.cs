@@ -1,10 +1,12 @@
 ﻿using System;
-using System.Configuration;
+using System.Linq;
 using System.Threading;
-using PageVisitor.Settings;
-using PageVisitor.Utils;
+using FrequencyPageVisitor.PageModels;
+using FrequencyPageVisitor.Settings;
+using FrequencyPageVisitor.Utils;
+using FrequencyPageVisitor.WebDriverWrapper;
 
-namespace PageVisitor.Visitor
+namespace FrequencyPageVisitor.Visitor
 {
     public class QueriesManager
     {
@@ -30,6 +32,15 @@ namespace PageVisitor.Visitor
         {
             try
             {
+                var driver = WebDriverProvider.GetWebDriver();
+                var yaPage = new YandexPage(driver);
+                yaPage.SearchRequest(query.Query);
+                var items = yaPage.ResultItems;
+
+                var l = items[items.Count - 1];
+                var g = l.GraySpecifications;
+                var i = l.YandexBuisenessCard;
+
                 var handler = new QueryHandler(query);
                 handler.HandleQuery();
             }

@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Configuration;
-using System.Security.Policy;
+﻿using System.Configuration;
 
-namespace PageVisitor.Settings
+namespace FrequencyPageVisitor.Settings
 {
     public class VisitorSettings : ConfigurationSection
     {
@@ -27,11 +25,11 @@ namespace PageVisitor.Settings
             get { return (int)base["DelayInSeconds"]; }
             set { base["DelayInSeconds"] = value; }
         }
-        [ConfigurationProperty("Запросы")]
+        [ConfigurationProperty("Queries")]
         public QueriesCollection Queries
         {
-            get { return ((QueriesCollection)(base["Запросы"])); }
-            set { base["Запросы"] = value; }
+            get { return ((QueriesCollection)(base["Queries"])); }
+            set { base["Queries"] = value; }
         }
     }
 
@@ -56,19 +54,18 @@ namespace PageVisitor.Settings
 
     public class QueryElement : ConfigurationElement
     {
-        [ConfigurationProperty("Запрос")]
+        [ConfigurationProperty("Query")]
         public string Query
         {
-            get { return ((string)(base["Запрос"])); }
-            set { base["Запрос"] = value; }
+            get { return ((string)(base["Query"])); }
+            set { base["Query"] = value; }
         }
 
-        [ConfigurationProperty("Запрос")]
+        [ConfigurationProperty("Frequency")]
         public string Frequency
         {
-            get { return ((string)(base["Запрос"])); }
-            set { base["Запрос"] = value; }
+            get { return ((string)(base["Frequency"])); }
+            set { base["Frequency"] = value; }
         }
-
     }
 }

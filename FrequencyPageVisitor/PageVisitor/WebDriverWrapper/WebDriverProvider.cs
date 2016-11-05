@@ -1,12 +1,15 @@
 ﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
 
-namespace PageVisitor.WebDriverWrapper
+namespace FrequencyPageVisitor.WebDriverWrapper
 {
     public class WebDriverProvider
     {
-        public static IWebDriver GetWebDriver()
+        public static IWebDriver GetFFWebDriver()
         {
+
+
             var profile = new FirefoxProfile();
             profile.SetPreference("browser.download.folderList", 2);
 
@@ -28,6 +31,13 @@ namespace PageVisitor.WebDriverWrapper
 
 
             IWebDriver driver = new FirefoxDriver(profile);
+            driver.Manage().Window.Maximize();
+
+            return driver;
+        }
+        public static IWebDriver GetWebDriver()
+        {
+            IWebDriver driver = new ChromeDriver();
             driver.Manage().Window.Maximize();
 
             return driver;
