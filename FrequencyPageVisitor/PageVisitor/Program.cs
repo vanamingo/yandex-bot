@@ -22,9 +22,9 @@ namespace FrequencyPageVisitor
                     ItitLogFile();
                 }
 
-                var dataCollector = new DataCollector();
-                var searchResults = dataCollector.CollectRequestResults();
-                Serialize(searchResults);
+                //var dataCollector = new DataCollector();
+                //var searchResults = dataCollector.CollectRequestResults();
+                //Serialize(searchResults);
 
                 var o = DeSerialize();
 

@@ -18,18 +18,20 @@ namespace FrequencyPageVisitor.PageModels
         public YandexPage(IWebDriver driver, QueryElement query)
         {
             this._driver = driver;
-            Query = query;
+            Query = query.Query;
+            Frequency = query.Frequency;
             SearchRequest();
             ResultItems = GetResultItems();
         }
 
         private void SearchRequest()
         {
-            var url = "https://yandex.ru/search/?text=" + Query.Query; 
+            var url = "https://yandex.ru/search/?text=" + Query; 
             _driver.Navigate().GoToUrl(url);
         }
 
-        public QueryElement Query { get; set; }
+        public string Query { get; set; }
+        public string Frequency { get; set; }
 
         public List<QueryResult> ResultItems { get; set; }
         public List<QueryResult> AdvertisementResultItems {

@@ -14,6 +14,11 @@ namespace FrequencyPageVisitor.PageModels
 
     public class QueryResult
     {
+        public QueryResult()
+        {
+            
+        }
+
         private readonly IWebElement _webElement;
 
         public QueryResult(IWebElement webElement)
