@@ -1,4 +1,6 @@
-﻿using System.Configuration;
+﻿using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
 
 namespace FrequencyPageVisitor.Settings
 {
@@ -30,6 +32,14 @@ namespace FrequencyPageVisitor.Settings
         {
             get { return ((QueriesCollection)(base["Queries"])); }
             set { base["Queries"] = value; }
+        }
+
+        public List<QueryElement> QueriesList
+        {
+            get
+            {
+                return Queries.Cast<QueryElement>().ToList();
+            }
         }
     }
 

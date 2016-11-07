@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Serialization;
 using OpenQA.Selenium;
 
 namespace FrequencyPageVisitor.PageModels
@@ -50,6 +51,16 @@ namespace FrequencyPageVisitor.PageModels
         public string TitleUrl { get; set; }
 
         public string TitleLink { get; set; }
+
+        [XmlIgnore]
+        public string CompanySite
+        {
+            get
+            {
+                var site = TitleUrl.Replace("Реклама", "").Split('/')[0];
+                return site;
+            }
+        }
 
         public string GetTitleLink()
         {

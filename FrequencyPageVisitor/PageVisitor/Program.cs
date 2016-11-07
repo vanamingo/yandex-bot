@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using System.Linq;
 using System.Xml.Serialization;
 using FrequencyPageVisitor.PageModels;
+using FrequencyPageVisitor.Reports;
 using FrequencyPageVisitor.Settings;
 using FrequencyPageVisitor.Utils;
 using FrequencyPageVisitor.Visitor;
@@ -26,7 +28,9 @@ namespace FrequencyPageVisitor
                 //var searchResults = dataCollector.CollectRequestResults();
                 //Serialize(searchResults);
 
-                var o = DeSerialize();
+                var yaPages = DeSerialize();
+
+                var report = new RivalListReport(yaPages);
 
 
             }
