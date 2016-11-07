@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using FrequencyPageVisitor.Settings;
 using OpenQA.Selenium;
 
 namespace FrequencyPageVisitor.PageModels
@@ -10,27 +11,38 @@ namespace FrequencyPageVisitor.PageModels
     {
         private readonly IWebDriver _driver;
 
-        public YandexPage(IWebDriver driver)
+        public YandexPage()
         {
-            this._driver = driver;
         }
 
-        public void SearchRequest(string requestText)
+        public YandexPage(IWebDriver driver, QueryElement query)
         {
-            var url = "https://yandex.ru/search/?text=" + requestText; 
+            this._driver = driver;
+            Query = query;
+            SearchRequest();
+            ResultItems = GetResultItems();
+        }
+
+        private void SearchRequest()
+        {
+            var url = "https://yandex.ru/search/?text=" + Query.Query; 
             _driver.Navigate().GoToUrl(url);
         }
 
-        public List<QueryResult> ResultItems
-        {
-            get
-            {
-                var elements = _driver
-                    .FindElements(By.CssSelector("li.serp-item"))
-                    .ToList();
+        public QueryElement Query { get; set; }
 
-                return elements.Select(e => new QueryResult(e)).ToList();
-            }
+        public List<QueryResult> ResultItems { get; set; }
+        public List<QueryResult> AdvertisementResultItems {
+            get { return ResultItems.Where(i => i.ResultType != QResultType.RegularItem).ToList(); }
+        }
+        private List<QueryResult> GetResultItems()
+        {
+            var elements = _driver
+                .FindElements(By.CssSelector("li.serp-item"))
+                .ToList();
+
+            return elements.Select(e => new QueryResult(e)).ToList();
+
         }
     }
 }

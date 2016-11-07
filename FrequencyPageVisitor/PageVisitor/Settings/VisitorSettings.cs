@@ -49,11 +49,16 @@ namespace FrequencyPageVisitor.Settings
         public QueryElement this[int idx]
         {
             get { return (QueryElement)BaseGet(idx); }
+            set { ; }
         }
     }
 
     public class QueryElement : ConfigurationElement
     {
+        public QueryElement()
+        {
+        }
+
         [ConfigurationProperty("Query")]
         public string Query
         {

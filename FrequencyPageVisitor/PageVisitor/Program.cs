@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using System.Xml.Serialization;
+using FrequencyPageVisitor.PageModels;
 using FrequencyPageVisitor.Settings;
 using FrequencyPageVisitor.Utils;
 using FrequencyPageVisitor.Visitor;
@@ -19,8 +22,13 @@ namespace FrequencyPageVisitor
                     ItitLogFile();
                 }
 
-                var manager = new QueriesManager();
-                manager.HandleQueries();
+                var dataCollector = new DataCollector();
+                var searchResults = dataCollector.CollectRequestResults();
+                Serialize(searchResults);
+
+                var o = DeSerialize();
+
+
             }
             catch (Exception ex)
             {
@@ -64,6 +72,31 @@ namespace FrequencyPageVisitor
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("\n\n\nДля завершения нажмите любую кнопку");
         }
+
+
+        public static List<YandexPage> DeSerialize( )
+        {
+            XmlSerializer formatter = new XmlSerializer(typeof(List<YandexPage>));
+            // десериализация
+            using (FileStream fs = new FileStream("yaPage.xml", FileMode.OpenOrCreate))
+            {
+                return (List<YandexPage>)formatter.Deserialize(fs);
+            }
+        }
+
+        public static void Serialize(List<YandexPage> ypList)
+        {
+            // передаем в конструктор тип класса
+            XmlSerializer formatter = new XmlSerializer(typeof(List<YandexPage>));
+
+            // получаем поток, куда будем записывать сериализованный объект
+            using (FileStream fs = new FileStream("yaPage.xml", FileMode.OpenOrCreate))
+            {
+                formatter.Serialize(fs, ypList);
+            }
+        }
+
+        
     }
 
     public class GlobalSettings

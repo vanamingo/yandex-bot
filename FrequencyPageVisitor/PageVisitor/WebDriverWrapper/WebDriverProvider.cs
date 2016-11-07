@@ -38,6 +38,7 @@ namespace FrequencyPageVisitor.WebDriverWrapper
         public static IWebDriver GetWebDriver()
         {
             IWebDriver driver = new ChromeDriver();
+            
             driver.Manage().Window.Maximize();
 
             return driver;
