@@ -27,14 +27,14 @@ namespace FrequencyPageVisitor
                 var reportDir = CreateReportFolder();
 
                 var dataCollector = new DataCollector();
-                var yaPages = dataCollector.CollectRequestResults();
-                Serialize(yaPages, Path.Combine(reportDir, "yaPages.xml"));
+               //var yaPages = dataCollector.CollectRequestResults();
+               //Serialize(yaPages, Path.Combine(reportDir, "yaPages.xml"));
 
-                //var yaPages = DeSerialize();
+                var yaPages = DeSerialize();
 
                 var report = new RivalListReport(yaPages);
-                var printer = new RivalListReportPrinter(report);
-                printer.Print(Path.Combine(reportDir, "RivalListReport.html"));
+                var printer = new RivalListReportPrinter(report, Path.Combine(reportDir, "RivalListReport-{0}.html"));
+                printer.Print(GlobalSettings.VisitorSettings.RivalsOnPage);
 
 
             }
@@ -85,7 +85,7 @@ namespace FrequencyPageVisitor
         {
             XmlSerializer formatter = new XmlSerializer(typeof(List<YandexPage>));
             // десериализация
-            using (FileStream fs = new FileStream("yaPage.xml", FileMode.OpenOrCreate))
+            using (FileStream fs = new FileStream("yaPages.xml", FileMode.OpenOrCreate))
             {
                 return (List<YandexPage>)formatter.Deserialize(fs);
             }

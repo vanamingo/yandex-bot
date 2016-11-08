@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
@@ -11,25 +12,45 @@ namespace FrequencyPageVisitor.Reports
 {
     public class RivalListReportPrinter
     {
-        private const int MaxCompanyCount = 5;
-
-        private readonly int CompanyCount;
+        //private const int MaxCompanyCount = 5;
+        //
+        //private readonly int CompanyCount;
     
 
         private readonly RivalListReport _report;
+        private readonly string _path;
 
-        public RivalListReportPrinter(RivalListReport report)
+        public RivalListReportPrinter(RivalListReport report, string path)
         {
             _report = report;
+            _path = path;
 
-            CompanyCount = report.Companies.Count < MaxCompanyCount ? report.Companies.Count : MaxCompanyCount;
+            //CompanyCount = report.Companies.Count < MaxCompanyCount ? report.Companies.Count : MaxCompanyCount;
         }
 
-        public void Print(string path)
+        public void Print(int companiesOnPageCount)
         {
-            var tableHeader = GetTableHeader(_report.Companies);
-            var rows = GetRowsLayout(_report);
-            var tableBottom = GetTableBottom(_report.Companies);
+            var lastCompanyIndex = _report.Companies.Count - 1;
+            PrintPage(0,lastCompanyIndex, "All");
+            var firstIndex = 0;
+            var lastIndex = 0;
+            var num = 1;
+            do
+            {
+                lastIndex = firstIndex + companiesOnPageCount;
+                lastIndex = lastIndex > lastCompanyIndex ? lastCompanyIndex : lastIndex;
+                PrintPage(firstIndex, lastIndex, num.ToString());
+                firstIndex = lastIndex + 1;
+                num++;
+            }
+            while (lastIndex < lastCompanyIndex);
+        }
+
+        private void PrintPage(int firstIndex, int lastIndex, string postFix)
+        {
+            var tableHeader = GetTableHeader(_report.Companies, firstIndex, lastIndex);
+            var rows = GetRowsLayout(_report, firstIndex, lastIndex);
+            var tableBottom = GetTableBottom(_report.Companies, firstIndex, lastIndex);
 
             var result = string.Format("<html>" +
                                        "<body>" +
@@ -38,17 +59,19 @@ namespace FrequencyPageVisitor.Reports
                                        "table  {{ border-collapse:collapse; }}" +
                                        "TD, TH  {{border:1px solid black; padding: 15px;}}" +
                                        ".bold {{ font-weight: bold; }}" +
-                                       ".group {{ background-color: #93B4BF; }}" + 
+                                       ".group {{ background-color: #93B4BF; }}" +
+                                       ".green {{ background-color: #71ba77; }}" +
+                                       ".odd {{ background-color: #e5e5e5; }}" + 
                                        "</style>" +
                                        "</head>" +
 
                                        "{0}{1}{2}" +
                                        "</body>" +
                                        "</html>", tableHeader, rows, tableBottom);
-            File.WriteAllText(path, result);
+            File.WriteAllText(String.Format(_path, postFix), result);
         }
 
-        private string GetTableBottom(List<RivalListReport.CompanyAdverisment> companies)
+        private string GetTableBottom(List<RivalListReport.CompanyAdverisment> companies, int firstIndex, int lastIndex)
         {
             var sb = new StringBuilder();
             sb.AppendLine("<tr class='bold' >");
@@ -56,12 +79,12 @@ namespace FrequencyPageVisitor.Reports
             var totalTopAdvertismentsCount = companies.Sum(c => c.TopAdvertismentsCount);
             var totalBottomAdvertismentsCount = companies.Sum(c => c.BottomAdvertismentsCount);
             var totalCount = totalTopAdvertismentsCount + totalBottomAdvertismentsCount;
-            sb.AppendLine("<td></td>");
-            sb.AppendLine("<td>Всего(СР/Г)</td>");
-            sb.AppendFormat("<td>{0}({1}/{2})</td>", totalCount, totalTopAdvertismentsCount, totalBottomAdvertismentsCount);
-            sb.AppendLine("<td></td>");
+            sb.AppendLine("<td class='green'></td>");
+            sb.AppendLine("<td class='green'>Всего(СР/Г)</td>");
+            sb.AppendFormat("<td class='green'>{0}({1}/{2})</td>", totalCount, totalTopAdvertismentsCount, totalBottomAdvertismentsCount);
+            sb.AppendLine("<td class='green'></td>");
 
-            for (int i = 0; i < CompanyCount; i++)
+            for (int i = firstIndex; i <= lastIndex; i++)
             {
                 sb.AppendFormat("<td>{0}({1}/{2})</td>"
                     , companies[i].TopAdvertismentsCount + companies[i].BottomAdvertismentsCount,
@@ -73,20 +96,20 @@ namespace FrequencyPageVisitor.Reports
             return sb.ToString();
         }
 
-        private string GetTableHeader(List<RivalListReport.CompanyAdverisment> companies)
+        private string GetTableHeader(List<RivalListReport.CompanyAdverisment> companies, int firstIndex, int lastIndex)
         {
             var sb = new StringBuilder();
 
             sb.AppendLine("<table>");
             
             sb.AppendLine("<tr>");
-            
-            sb.AppendLine("<td></td>");
-            sb.AppendLine("<td>Сайты</td>");
-            sb.AppendLine("<td></td>");
-            sb.AppendLine("<td></td>");
 
-            for (int i = 0; i < CompanyCount; i++)
+            sb.AppendLine("<td class='green'></td>");
+            sb.AppendLine("<td class='green'>Сайты</td>");
+            sb.AppendLine("<td class='green'></td>");
+            sb.AppendLine("<td class='green'></td>");
+
+            for (int i = firstIndex; i <= lastIndex; i++)
             {
                 sb.AppendFormat("<td>{0}</td>", companies[i].CompanyName);
             }
@@ -94,12 +117,12 @@ namespace FrequencyPageVisitor.Reports
 
             sb.AppendLine("</tr>");
 
-            sb.AppendLine("<tr class='bold'>");
-            sb.AppendLine("<td class='bold'>Группировки запросов</td>");
-            sb.AppendLine("<td>Запросы</td>");
-            sb.AppendLine("<td>Количество</br> объявлений </br>конкурентов</br>Всего(СР/Г)</td>");
-            sb.AppendLine("<td>Частотность</td>");
-            for (int i = 0; i < CompanyCount; i++)
+            sb.AppendLine("<tr>");
+            sb.AppendLine("<td class='bold green'>Группировки запросов</td>");
+            sb.AppendLine("<td class='green'>Запросы</td>");
+            sb.AppendLine("<td class='green'>Количество</br> объявлений </br>конкурентов</br>Всего(СР/Г)</td>");
+            sb.AppendLine("<td class='green'>Частотность</td>");
+            for (int i = firstIndex; i <= lastIndex; i++)
             {
                 sb.AppendFormat("<td></td>");
             }
@@ -108,30 +131,31 @@ namespace FrequencyPageVisitor.Reports
             return sb.ToString();
         }
 
-        private string GetRowsLayout(RivalListReport report)
+        private string GetRowsLayout(RivalListReport report, int firstIndex, int lastIndex)
         {
             var sb = new StringBuilder();
             var groups = new Queue<string>();
+            var rowNumber = 0;
             foreach (var reportRow in report.Rows)
             {
                 if (reportRow.QueryGroup.Count != 0)
                 {
                     reportRow.QueryGroup.ForEach(g => groups.Enqueue(g));
-                    sb.AppendLine(GetGroupRow(groups));
+                    sb.AppendLine(GetGroupRow(groups, firstIndex, lastIndex));
                 }
-                sb.AppendLine(GetRow(reportRow, groups));
+                sb.AppendLine(GetRow(reportRow, groups, firstIndex, lastIndex, rowNumber++));
             }
 
             return sb.ToString();
         }
 
-        private string GetGroupRow(Queue<string> groups)
+        private string GetGroupRow(Queue<string> groups, int firstIndex, int lastIndex)
         {
             var sb = new StringBuilder();
             sb.AppendLine("<tr>");
-            
-            sb.AppendFormat("<td>{0}</td>", groups.Dequeue());
-            for (int i = 0; i < 3 + CompanyCount; i++)
+
+            sb.AppendFormat("<td class='green'>{0}</td>", groups.Dequeue());
+            for (int i = 0; i <= 3 + lastIndex - firstIndex; i++)
             {
                 sb.AppendLine("<td class='group'></td>");
             }
@@ -140,17 +164,17 @@ namespace FrequencyPageVisitor.Reports
             return sb.ToString();
         }
 
-        private string GetRow(RivalListReport.ReportRow reportRow, Queue<string> groups)
+        private string GetRow(RivalListReport.ReportRow reportRow, Queue<string> groups, int firstIndex, int lastIndex, int rowNumber)
         {
             var sb = new StringBuilder();
             sb.AppendLine("<tr>");
 
-            sb.AppendFormat("<td>{0}</td>", groups.Count > 0 ? groups.Dequeue() : "");
-            sb.AppendLine("<td>" + reportRow.QueryName + "</td>");
-            sb.AppendFormat("<td>{0}</td>", reportRow.Companies.Count);
-            sb.AppendLine("<td>" + reportRow.Frequency + "</td>");
+            sb.AppendFormat("<td class='green'>{0}</td>", groups.Count > 0 ? groups.Dequeue() : "");
+            sb.AppendLine("<td class='green'>" + reportRow.QueryName + "</td>");
+            sb.AppendFormat("<td class='green'>{0}</td>", reportRow.Companies.Count);
+            sb.AppendLine("<td class='green'>" + reportRow.Frequency + "</td>");
 
-            for (int i = 0; i < CompanyCount; i++)
+            for (int i = firstIndex; i <= lastIndex; i++)
             {
                 var companyColumn = _report.Companies[i];
                 var companyAdv = reportRow.Companies.FirstOrDefault(c => c.CompanyName == companyColumn.CompanyName);
@@ -165,7 +189,7 @@ namespace FrequencyPageVisitor.Reports
                     }
                 }
 
-                sb.AppendLine("<td>");
+                sb.AppendFormat("<td {0}>", rowNumber % 2 != 0 ? "class='odd'": "");
                 sb.AppendLine(advPosition);
                 sb.AppendLine("</td>");
             }

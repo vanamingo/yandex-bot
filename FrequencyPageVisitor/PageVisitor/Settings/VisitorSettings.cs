@@ -27,6 +27,13 @@ namespace FrequencyPageVisitor.Settings
             get { return (int)base["DelayInSeconds"]; }
             set { base["DelayInSeconds"] = value; }
         }
+        
+        [ConfigurationProperty("RivalsOnPage")]
+        public int RivalsOnPage
+        {
+            get { return (int)base["RivalsOnPage"]; }
+            set { base["RivalsOnPage"] = value; }
+        }
         [ConfigurationProperty("Queries")]
         public QueriesCollection Queries
         {
