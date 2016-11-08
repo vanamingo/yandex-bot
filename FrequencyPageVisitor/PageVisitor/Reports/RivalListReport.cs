@@ -86,6 +86,7 @@ namespace FrequencyPageVisitor.Reports
             {
                 QueryName = yandexPage.Query,
                 Frequency = yandexPage.Frequency,
+                QueryGroup = yandexPage.QueryGroup,
                 AdvertismentCount = yandexPage.AdvertisementResultItems.Count,
                 Companies = companies.Where(_ => _.Advertisments.ContainsKey(yandexPage.Query)).ToList()
             };
@@ -97,6 +98,7 @@ namespace FrequencyPageVisitor.Reports
             public string Frequency { get; set; }
             public int AdvertismentCount { get; set; }
             public List<CompanyAdverisment> Companies { get; set; }
+            public List<string> QueryGroup { get; set; }
         }
 
         public class CompanyAdverisment

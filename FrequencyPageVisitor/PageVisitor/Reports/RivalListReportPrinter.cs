@@ -37,7 +37,8 @@ namespace FrequencyPageVisitor.Reports
                                        "<style>" +
                                        "table  {{ border-collapse:collapse; }}" +
                                        "TD, TH  {{border:1px solid black; padding: 15px;}}" +
-                                       ".bold {{ font-weight: bold; }}" + 
+                                       ".bold {{ font-weight: bold; }}" +
+                                       ".group {{ background-color: #93B4BF; }}" + 
                                        "</style>" +
                                        "</head>" +
 
@@ -51,9 +52,13 @@ namespace FrequencyPageVisitor.Reports
         {
             var sb = new StringBuilder();
             sb.AppendLine("<tr class='bold' >");
+
+            var totalTopAdvertismentsCount = companies.Sum(c => c.TopAdvertismentsCount);
+            var totalBottomAdvertismentsCount = companies.Sum(c => c.BottomAdvertismentsCount);
+            var totalCount = totalTopAdvertismentsCount + totalBottomAdvertismentsCount;
             sb.AppendLine("<td></td>");
             sb.AppendLine("<td>Всего(СР/Г)</td>");
-            sb.AppendLine("<td></td>");
+            sb.AppendFormat("<td>{0}({1}/{2})</td>", totalCount, totalTopAdvertismentsCount, totalBottomAdvertismentsCount);
             sb.AppendLine("<td></td>");
 
             for (int i = 0; i < CompanyCount; i++)
@@ -92,7 +97,7 @@ namespace FrequencyPageVisitor.Reports
             sb.AppendLine("<tr class='bold'>");
             sb.AppendLine("<td class='bold'>Группировки запросов</td>");
             sb.AppendLine("<td>Запросы</td>");
-            sb.AppendLine("<td>Количество</br> объявлений </br>конкурентов</td>");
+            sb.AppendLine("<td>Количество</br> объявлений </br>конкурентов</br>Всего(СР/Г)</td>");
             sb.AppendLine("<td>Частотность</td>");
             for (int i = 0; i < CompanyCount; i++)
             {
@@ -106,22 +111,43 @@ namespace FrequencyPageVisitor.Reports
         private string GetRowsLayout(RivalListReport report)
         {
             var sb = new StringBuilder();
+            var groups = new Queue<string>();
             foreach (var reportRow in report.Rows)
             {
-                sb.AppendLine(GetRow(reportRow));
+                if (reportRow.QueryGroup.Count != 0)
+                {
+                    reportRow.QueryGroup.ForEach(g => groups.Enqueue(g));
+                    sb.AppendLine(GetGroupRow(groups));
+                }
+                sb.AppendLine(GetRow(reportRow, groups));
             }
 
             return sb.ToString();
         }
 
-        private string GetRow(RivalListReport.ReportRow reportRow)
+        private string GetGroupRow(Queue<string> groups)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("<tr>");
+            
+            sb.AppendFormat("<td>{0}</td>", groups.Dequeue());
+            for (int i = 0; i < 3 + CompanyCount; i++)
+            {
+                sb.AppendLine("<td class='group'></td>");
+            }
+            sb.AppendLine("</tr>");
+
+            return sb.ToString();
+        }
+
+        private string GetRow(RivalListReport.ReportRow reportRow, Queue<string> groups)
         {
             var sb = new StringBuilder();
             sb.AppendLine("<tr>");
 
-            sb.AppendLine("<td></td>");
+            sb.AppendFormat("<td>{0}</td>", groups.Count > 0 ? groups.Dequeue() : "");
             sb.AppendLine("<td>" + reportRow.QueryName + "</td>");
-            sb.AppendLine("<td>" + reportRow.Companies.Count.ToString() + "</td>");
+            sb.AppendFormat("<td>{0}</td>", reportRow.Companies.Count);
             sb.AppendLine("<td>" + reportRow.Frequency + "</td>");
 
             for (int i = 0; i < CompanyCount; i++)
