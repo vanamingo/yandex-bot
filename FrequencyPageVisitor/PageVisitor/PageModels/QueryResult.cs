@@ -33,10 +33,11 @@ namespace FrequencyPageVisitor.PageModels
             YandexBuisenessCard = GetYandexBuisenessCard();
             GreenUrl = GetGreenUrl();
             ResultType = GetResultType();
-
         }
 
         public QResultType ResultType { get; set; }
+        [XmlIgnore]
+        public int ResultNumber { get; set; }
 
         public bool GreenUrl { get; set; }
 
@@ -180,7 +181,6 @@ namespace FrequencyPageVisitor.PageModels
             }
 
             return QResultType.BottomAdvertisement;
-
         }
     }
 }

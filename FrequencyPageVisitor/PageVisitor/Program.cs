@@ -24,15 +24,17 @@ namespace FrequencyPageVisitor
                     ItitLogFile();
                 }
 
-                //var dataCollector = new DataCollector();
-                //var searchResults = dataCollector.CollectRequestResults();
+                var reportDir = CreateReportFolder();
+
+                var dataCollector = new DataCollector();
+                var yaPages = dataCollector.CollectRequestResults();
                 //Serialize(searchResults);
 
-                var yaPages = DeSerialize();
+                //var yaPages = DeSerialize();
 
                 var report = new RivalListReport(yaPages);
                 var printer = new RivalListReportPrinter(report);
-                printer.Print("RivalListReport.html");
+                printer.Print(Path.Combine(reportDir, "RivalListReport.html"));
 
 
             }
@@ -79,7 +81,6 @@ namespace FrequencyPageVisitor
             Console.WriteLine("\n\n\nДля завершения нажмите любую кнопку");
         }
 
-
         public static List<YandexPage> DeSerialize( )
         {
             XmlSerializer formatter = new XmlSerializer(typeof(List<YandexPage>));
@@ -102,7 +103,14 @@ namespace FrequencyPageVisitor
             }
         }
 
-        
+        public static string CreateReportFolder()
+        {
+            var path = Path.Combine("Reports", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"));
+            Directory.CreateDirectory(path);
+            return path;
+        }
+
+
     }
 
     public class GlobalSettings

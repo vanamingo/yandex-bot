@@ -134,7 +134,8 @@ namespace FrequencyPageVisitor.Reports
                 {
                     if (companyAdv.Advertisments.ContainsKey(reportRow.QueryName))
                     {
-                        advPosition = companyAdv.Advertisments[reportRow.QueryName].ResultType == QResultType.TopAdvertisement ? "СР" : "Г";
+                        var queryResult = companyAdv.Advertisments[reportRow.QueryName];
+                        advPosition = (queryResult.ResultType == QResultType.TopAdvertisement ? "СР" : "Г") + queryResult.ResultNumber;
                     }
                 }
 

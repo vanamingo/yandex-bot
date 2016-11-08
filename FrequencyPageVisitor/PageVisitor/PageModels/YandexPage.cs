@@ -35,7 +35,26 @@ namespace FrequencyPageVisitor.PageModels
 
         public List<QueryResult> ResultItems { get; set; }
         public List<QueryResult> AdvertisementResultItems {
-            get { return ResultItems.Where(i => i.ResultType != QResultType.RegularItem).ToList(); }
+            get
+            {
+                var resultItems = ResultItems.Where(i => i.ResultType != QResultType.RegularItem).ToList();
+                var num = 1;
+                for (int i = 0; i < resultItems.Count; i++)
+                {
+                    var item = resultItems[i];
+
+                    if (i != 0 && resultItems[i - 1].ResultType != resultItems[i].ResultType)
+                    {
+                        num = 1;
+                    }
+
+                    item.ResultNumber = num;
+                    num++;
+                }
+                
+
+                return resultItems;
+            }
         }
         private List<QueryResult> GetResultItems()
         {
