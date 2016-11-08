@@ -63,6 +63,7 @@ namespace FrequencyPageVisitor.PageModels
         {
             var elements = _driver
                 .FindElements(By.CssSelector("li.serp-item"))
+                //.FindElements(By.CssSelector("li.serp-adv-item"))
                 .ToList();
 
             return elements.Select(e => new QueryResult(e)).ToList();
