@@ -28,7 +28,7 @@ namespace FrequencyPageVisitor
 
                 var dataCollector = new DataCollector();
                 var yaPages = dataCollector.CollectRequestResults();
-                //Serialize(searchResults);
+                Serialize(yaPages, Path.Combine(reportDir, "yaPages.xml"));
 
                 //var yaPages = DeSerialize();
 
@@ -71,7 +71,7 @@ namespace FrequencyPageVisitor
 
         static void PrintContacts()
         {
-            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Контакты разработчика \n Максим Максимов \n+79506113772\n fokusfm@yandex.ru \nhttps://vk.com/maksimov.maksim");
         }
 
@@ -91,13 +91,13 @@ namespace FrequencyPageVisitor
             }
         }
 
-        public static void Serialize(List<YandexPage> ypList)
+        public static void Serialize(List<YandexPage> ypList, string path)
         {
             // передаем в конструктор тип класса
             XmlSerializer formatter = new XmlSerializer(typeof(List<YandexPage>));
 
             // получаем поток, куда будем записывать сериализованный объект
-            using (FileStream fs = new FileStream("yaPage.xml", FileMode.OpenOrCreate))
+            using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate))
             {
                 formatter.Serialize(fs, ypList);
             }
@@ -109,8 +109,6 @@ namespace FrequencyPageVisitor
             Directory.CreateDirectory(path);
             return path;
         }
-
-
     }
 
     public class GlobalSettings

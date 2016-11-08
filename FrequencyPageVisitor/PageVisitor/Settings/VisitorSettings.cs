@@ -65,8 +65,6 @@ namespace FrequencyPageVisitor.Settings
                 b.Query = b.Query;
             }
         }
-
-
     }
 
     public class QueryElement : ConfigurationElement
