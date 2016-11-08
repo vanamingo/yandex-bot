@@ -20,9 +20,12 @@ namespace FrequencyPageVisitor.PageModels
             this._driver = driver;
             Query = query.Query;
             Frequency = query.Frequency;
+            QueryGroup = query.Group;
             SearchRequest();
             ResultItems = GetResultItems();
         }
+
+        public List<string> QueryGroup { get; set; }
 
         private void SearchRequest()
         {

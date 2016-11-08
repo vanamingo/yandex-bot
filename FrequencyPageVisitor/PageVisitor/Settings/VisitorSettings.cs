@@ -86,5 +86,25 @@ namespace FrequencyPageVisitor.Settings
             get { return ((string)(base["Frequency"])); }
             set { base["Frequency"] = value; }
         }
+
+        [ConfigurationProperty("Group")]
+        public string GroupRaw
+        {
+            get { return ((string)(base["Group"])); }
+            set { base["Group"] = value; }
+        }
+
+        public List<string> Group
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(GroupRaw))
+                {
+                    return new List<string>();
+                }
+
+                return GroupRaw.Split('/').ToList();
+            }
+        }
     }
 }

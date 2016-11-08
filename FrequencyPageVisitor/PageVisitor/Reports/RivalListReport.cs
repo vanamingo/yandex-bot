@@ -74,6 +74,8 @@ namespace FrequencyPageVisitor.Reports
 
         private List<ReportRow> BuildRows(IList<YandexPage> pages, List<CompanyAdverisment> companies)
         {
+            //for
+
             return pages.Select(p => GetRow(p, companies)).ToList();
 
         }
