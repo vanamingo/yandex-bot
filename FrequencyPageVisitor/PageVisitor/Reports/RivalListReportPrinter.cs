@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.InteropServices;
 using System.Text;
 using FrequencyPageVisitor.PageModels;
 using FrequencyPageVisitor.Settings;
@@ -9,13 +11,96 @@ namespace FrequencyPageVisitor.Reports
 {
     public class RivalListReportPrinter
     {
+        private const int MaxCompanyCount = 5;
+
+        private readonly int CompanyCount;
+    
+
         private readonly RivalListReport _report;
 
         public RivalListReportPrinter(RivalListReport report)
         {
             _report = report;
 
-            var rows = GetRowsLayout(report);
+            CompanyCount = report.Companies.Count < MaxCompanyCount ? report.Companies.Count : MaxCompanyCount;
+        }
+
+        public void Print(string path)
+        {
+            var tableHeader = GetTableHeader(_report.Companies);
+            var rows = GetRowsLayout(_report);
+            var tableBottom = GetTableBottom(_report.Companies);
+
+            var result = string.Format("<html>" +
+                                       "<body>" +
+                                       "<head>" +
+                                       "<style>" +
+                                       "table  {{ border-collapse:collapse; }}" +
+                                       "TD, TH  {{border:1px solid black; padding: 15px;}}" +
+                                       ".bold {{ font-weight: bold; }}" + 
+                                       "</style>" +
+                                       "</head>" +
+
+                                       "{0}{1}{2}" +
+                                       "</body>" +
+                                       "</html>", tableHeader, rows, tableBottom);
+            File.WriteAllText(path, result);
+        }
+
+        private string GetTableBottom(List<RivalListReport.CompanyAdverisment> companies)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("<tr class='bold' >");
+            sb.AppendLine("<td></td>");
+            sb.AppendLine("<td>Всего(СР/Г)</td>");
+            sb.AppendLine("<td></td>");
+            sb.AppendLine("<td></td>");
+
+            for (int i = 0; i < CompanyCount; i++)
+            {
+                sb.AppendFormat("<td>{0}({1}/{2})</td>"
+                    , companies[i].TopAdvertismentsCount + companies[i].BottomAdvertismentsCount,
+                    companies[i].TopAdvertismentsCount,
+                    companies[i].BottomAdvertismentsCount);
+            }
+
+            sb.AppendLine("</tr>");
+            return sb.ToString();
+        }
+
+        private string GetTableHeader(List<RivalListReport.CompanyAdverisment> companies)
+        {
+            var sb = new StringBuilder();
+
+            sb.AppendLine("<table>");
+            
+            sb.AppendLine("<tr>");
+            
+            sb.AppendLine("<td></td>");
+            sb.AppendLine("<td>Сайты</td>");
+            sb.AppendLine("<td></td>");
+            sb.AppendLine("<td></td>");
+
+            for (int i = 0; i < CompanyCount; i++)
+            {
+                sb.AppendFormat("<td>{0}</td>", companies[i].CompanyName);
+            }
+
+
+            sb.AppendLine("</tr>");
+
+            sb.AppendLine("<tr class='bold'>");
+            sb.AppendLine("<td class='bold'>Группировки запросов</td>");
+            sb.AppendLine("<td>Запросы</td>");
+            sb.AppendLine("<td>Количество</br> объявлений </br>конкурентов</td>");
+            sb.AppendLine("<td>Частотность</td>");
+            for (int i = 0; i < CompanyCount; i++)
+            {
+                sb.AppendFormat("<td></td>");
+            }
+            sb.AppendLine("</tr>");
+
+            return sb.ToString();
         }
 
         private string GetRowsLayout(RivalListReport report)
@@ -23,32 +108,23 @@ namespace FrequencyPageVisitor.Reports
             var sb = new StringBuilder();
             foreach (var reportRow in report.Rows)
             {
-                sb.AppendLine(GetRow(reportRow, report.Companies));
+                sb.AppendLine(GetRow(reportRow));
             }
+
+            return sb.ToString();
         }
 
-        private string GetRow(RivalListReport.ReportRow reportRow, List<RivalListReport.CompanyAdverisment> companies)
+        private string GetRow(RivalListReport.ReportRow reportRow)
         {
             var sb = new StringBuilder();
             sb.AppendLine("<tr>");
 
-            sb.AppendLine("<td>");
-            //Группировка
-            sb.AppendLine("</td>");
+            sb.AppendLine("<td></td>");
+            sb.AppendLine("<td>" + reportRow.QueryName + "</td>");
+            sb.AppendLine("<td>" + reportRow.Companies.Count.ToString() + "</td>");
+            sb.AppendLine("<td>" + reportRow.Frequency + "</td>");
 
-            sb.AppendLine("<td>");
-            sb.AppendLine(reportRow.QueryName);
-            sb.AppendLine("</td>");
-
-            sb.AppendLine("<td>");
-            sb.AppendLine(reportRow.Companies.Count.ToString());
-            sb.AppendLine("</td>");
-
-            sb.AppendLine("<td>");
-            sb.AppendLine(reportRow.Frequency);
-            sb.AppendLine("</td>");
-
-            for (int i = 0; i <= 5; i++)
+            for (int i = 0; i < CompanyCount; i++)
             {
                 var companyColumn = _report.Companies[i];
                 var companyAdv = reportRow.Companies.FirstOrDefault(c => c.CompanyName == companyColumn.CompanyName);

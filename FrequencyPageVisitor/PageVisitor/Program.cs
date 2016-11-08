@@ -31,6 +31,8 @@ namespace FrequencyPageVisitor
                 var yaPages = DeSerialize();
 
                 var report = new RivalListReport(yaPages);
+                var printer = new RivalListReportPrinter(report);
+                printer.Print("RivalListReport.html");
 
 
             }
