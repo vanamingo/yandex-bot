@@ -68,6 +68,16 @@ namespace FrequencyPageVisitor.Reports
                     return -1;
                 }
 
+                if (x.BottomAdvertismentsCount > y.BottomAdvertismentsCount)
+                {
+                    return 1;
+                }
+
+                if (x.BottomAdvertismentsCount < y.BottomAdvertismentsCount)
+                {
+                    return -1;
+                }
+
                 return 0;
             }
         }
