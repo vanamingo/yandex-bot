@@ -26,16 +26,34 @@ namespace FrequencyPageVisitor.Visitor
             var delay = _settings.DelayInSeconds*1000;
 
             var yaPages = new List<YandexPage>();
-            var driver = WebDriverProvider.GetWebDriver();
+           
+            IWebDriver driver = null;
+            //TODO. Управление временем жизни браузера более красиво. 
+            if (!GlobalSettings.VisitorSettings.NewBrowserForQuery)
+            {
+                driver = WebDriverProvider.GetWebDriver();
+            }
             for (int i = 0; i < _settings.Queries.Count; i++)
             {
+                //TODO. Управление временем жизни браузера более красиво. 
+                if (GlobalSettings.VisitorSettings.NewBrowserForQuery)
+                {
+                    driver = WebDriverProvider.GetWebDriver();
+                }
+
+
                 var queryElement = _settings.Queries[i];
                 Logger.WriteWhite(string.Format("({0} из {1}){2}", i+1, queryCount, queryElement.Query));
                 var query = queryElement;
                 yaPages.Add(GetResultPage(query, driver));
+
                 Thread.Sleep(delay);
             }
-            driver.Close();
+            if (!GlobalSettings.VisitorSettings.NewBrowserForQuery)
+            {
+                //TODO. Управление временем жизни браузера более красиво.
+                driver.Close();
+            }
             return yaPages;
         }
 

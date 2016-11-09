@@ -49,6 +49,37 @@ namespace FrequencyPageVisitor.Settings
 
             }
         }
+
+        [ConfigurationProperty("MakeScreenshots")]
+        public bool MakeScreenshots
+        {
+            get
+            {
+                return (bool)base["MakeScreenshots"];
+
+            }
+            set
+            {
+                base["MakeScreenshots"] = value.ToString();
+
+            }
+        }
+
+        [ConfigurationProperty("NewBrowserForQuery")]
+        public bool NewBrowserForQuery
+        {
+            get
+            {
+                return (bool)base["NewBrowserForQuery"];
+
+            }
+            set
+            {
+                base["NewBrowserForQuery"] = value.ToString();
+
+            }
+        }
+
         [ConfigurationProperty("Queries")]
         public QueriesCollection Queries
         {
