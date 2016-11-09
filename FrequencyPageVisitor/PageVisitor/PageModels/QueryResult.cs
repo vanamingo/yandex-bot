@@ -27,12 +27,56 @@ namespace FrequencyPageVisitor.PageModels
             _webElement = webElement;
             TitleLink = GetTitleLink();
             TitleUrl = GetTitleUrl();
+            TitleHref = GetTitleHref();
             TextAdvertisment = GetTextAdvertisment();
             FastLinks = GetFastLinks();
             GraySpecifications = GetGraySpecifications();
             YandexBuisenessCard = GetYandexBuisenessCard();
             GreenUrl = GetGreenUrl();
             ResultType = GetResultType();
+            YandexMarket = GetYandexMarket();
+        }
+
+        public string YandexMarket { get; set; }
+
+        private string GetYandexMarket()
+        {
+            var els = _webElement.FindElements(By.CssSelector(".rating2__stars"));
+
+            if (els.Count == 0)
+            {
+                return "нет";
+            }
+
+            var cl = els[0].GetAttribute("class");
+            var starsLength = cl.Replace("rating2__stars rating2__stars_width_", "").Trim();
+
+            float count;
+            if (float.TryParse(starsLength, out count))
+            {
+                return (count/20).ToString("F1");
+            }
+
+            return "ошибка в подсчете звезд.";
+        }
+
+        public string TitleHref { get; set; }
+        [XmlIgnore]
+        public string IsUtm {
+            get
+            {//yclid и utm
+                if (TitleHref.ToLower().Contains("utm"))
+                {
+                    return "utm";
+                }
+
+                if (TitleHref.ToLower().Contains("yclid"))
+                {
+                    return "yclid";
+                }
+
+                return "нет";
+            }
         }
 
         public QResultType ResultType { get; set; }
@@ -66,6 +110,17 @@ namespace FrequencyPageVisitor.PageModels
         public string GetTitleLink()
         {
             return GetElementText(".organic__url");
+        }
+        public string GetTitleHref()
+        {
+            var element = _webElement.FindElements(By.CssSelector(".organic__url"));
+
+            if (element.Count == 0)
+            {
+                return string.Empty;
+            }
+
+            return element[0].GetAttribute("href");
         }
 
         public string GetTitleUrl()

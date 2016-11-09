@@ -132,6 +132,15 @@ namespace FrequencyPageVisitor.Reports
 
                 sb.AppendFormat("<tr><td colspan='4'>Наличие отображаемой ссылки</td><td colspan='1'>{0}</td></tr>",
                     adv.GreenUrl ? "Да(" + adv.TitleUrl + ")" : "Нет");
+
+                sb.AppendFormat("<tr><td colspan='4'>Наличие отображаемой ссылки</td><td colspan='1'>{0}</td></tr>",
+                    adv.GreenUrl ? "Да(" + adv.TitleUrl + ")" : "Нет");
+
+                sb.AppendFormat("<tr><td colspan='4'>Наличие yclid и utm</td><td colspan='1'>{0}</td></tr>",
+                    adv.IsUtm);
+
+                sb.AppendFormat("<tr><td colspan='4'>YandexMarket</td><td colspan='1'>{0}</td></tr>",
+                    adv.YandexMarket);
             }
             else
             {
