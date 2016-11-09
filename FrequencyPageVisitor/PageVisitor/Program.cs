@@ -26,11 +26,19 @@ namespace FrequencyPageVisitor
 
                 var reportDir = CreateReportFolder();
 
-               var dataCollector = new DataCollector();
-               var yaPages = dataCollector.CollectRequestResults();
-               Serialize(yaPages, Path.Combine(reportDir, "yaPages.xml"));
+                var dataCollector = new DataCollector();
 
-               // var yaPages = DeSerialize();
+                List<YandexPage> yaPages;
+
+                if (!GlobalSettings.VisitorSettings.DeserializeMode)
+                {
+                    yaPages = dataCollector.CollectRequestResults();
+                    Serialize(yaPages, Path.Combine(reportDir, "yaPages.xml"));
+                }
+                else
+                {
+                    yaPages = DeSerialize();
+                }
 
                 var report = new RivalListReport(yaPages);
                 var printer = new RivalListReportPrinter(report, Path.Combine(reportDir, "RivalListReport-{0}.html"));

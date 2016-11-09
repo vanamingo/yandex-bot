@@ -34,6 +34,21 @@ namespace FrequencyPageVisitor.Settings
             get { return (int)base["RivalsOnPage"]; }
             set { base["RivalsOnPage"] = value; }
         }
+
+        [ConfigurationProperty("DeserializeMode")]
+        public bool DeserializeMode
+        {
+            get
+            {
+                return (bool)base["DeserializeMode"];
+
+            }
+            set
+            {
+                base["DeserializeMode"] = value.ToString();
+
+            }
+        }
         [ConfigurationProperty("Queries")]
         public QueriesCollection Queries
         {

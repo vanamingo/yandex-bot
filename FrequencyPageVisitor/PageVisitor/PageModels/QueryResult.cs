@@ -65,6 +65,12 @@ namespace FrequencyPageVisitor.PageModels
         public string IsUtm {
             get
             {//yclid и utm
+
+                if (TitleHref == null)
+                {
+                    return "нет";
+                }
+
                 if (TitleHref.ToLower().Contains("utm"))
                 {
                     return "utm";
