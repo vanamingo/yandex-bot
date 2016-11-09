@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 using System.Text;
 using FrequencyPageVisitor.PageModels;
+using FrequencyPageVisitor.Reports.Helpers;
 using FrequencyPageVisitor.Settings;
 
 namespace FrequencyPageVisitor.Reports
@@ -55,7 +56,7 @@ namespace FrequencyPageVisitor.Reports
             var result = string.Format("<html>" +
                                        "<body>" +
                                        "<head>" +
-                                       "<style>" +
+                                       "<style >" +
                                        "table  {{ border-collapse:collapse; }}" +
                                        "TD, TH  {{border:1px solid black; padding: 15px;}}" +
                                        ".bold {{ font-weight: bold; }}" +
@@ -71,7 +72,7 @@ namespace FrequencyPageVisitor.Reports
             File.WriteAllText(String.Format(_path, postFix), result);
         }
 
-        private string GetTableBottom(List<RivalListReport.CompanyAdverisment> companies, int firstIndex, int lastIndex)
+        private string GetTableBottom(List<CompanyAdverisment> companies, int firstIndex, int lastIndex)
         {
             var sb = new StringBuilder();
             sb.AppendLine("<tr class='bold' >");
@@ -96,7 +97,7 @@ namespace FrequencyPageVisitor.Reports
             return sb.ToString();
         }
 
-        private string GetTableHeader(List<RivalListReport.CompanyAdverisment> companies, int firstIndex, int lastIndex)
+        private string GetTableHeader(List<CompanyAdverisment> companies, int firstIndex, int lastIndex)
         {
             var sb = new StringBuilder();
 
@@ -171,7 +172,15 @@ namespace FrequencyPageVisitor.Reports
 
             sb.AppendFormat("<td class='green'>{0}</td>", groups.Count > 0 ? groups.Dequeue() : "");
             sb.AppendLine("<td class='green'>" + reportRow.QueryName + "</td>");
-            sb.AppendFormat("<td class='green'>{0}</td>", reportRow.Companies.Count);
+            var advList = reportRow
+                .Companies.Select(_ => _.Advertisments)
+                .Where(a => a.ContainsKey(reportRow.QueryName))
+                .ToList();
+
+            var advTopCount = advList.Count(_ => _[reportRow.QueryName].ResultType == QResultType.TopAdvertisement);
+            var advBottomCount = advList.Count(_ => _[reportRow.QueryName].ResultType == QResultType.BottomAdvertisement);
+
+            sb.AppendFormat("<td class='green'>{0}({1}/{2})</td>", reportRow.Companies.Count, advTopCount, advBottomCount);
             sb.AppendLine("<td class='green'>" + reportRow.Frequency + "</td>");
 
             for (int i = firstIndex; i <= lastIndex; i++)

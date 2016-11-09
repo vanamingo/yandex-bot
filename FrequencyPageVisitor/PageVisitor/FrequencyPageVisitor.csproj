@@ -85,8 +85,10 @@
     <Compile Include="PageModels\YandexPage.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reports\Helpers\CompaniesProvider.cs" />
     <Compile Include="Reports\RivalListReportPrinter.cs" />
     <Compile Include="Reports\RivalListReport.cs" />
+    <Compile Include="Reports\RivalReport.cs" />
     <Compile Include="Settings\VisitorSettings.cs" />
     <Compile Include="Utils\Logger.cs" />
     <Compile Include="Visitor\PageVisitor.cs" />
