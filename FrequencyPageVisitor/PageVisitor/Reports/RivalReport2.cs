@@ -97,10 +97,12 @@ namespace FrequencyPageVisitor.Reports
                 ReplaceMarker(ref result, "FastLinkTotal", adv.FastLinks.Sum(_ => _.Length).ToString());
 
 
-                var graySpecifications = string.Join("|", adv.GraySpecifications.ToArray());
-                var graySpecificationsLength = adv.GraySpecifications.Sum(_ => _.Length);
+                var graySpecifications = string.Join(" | ", adv.GraySpecifications.ToArray());
+                var graySpecificationsLengths = string.Join(" | ", adv.GraySpecifications.Select(s=>s.Length).ToArray());
+                var graySpecificationsTotal = adv.GraySpecifications.Sum(_ => _.Length);
                 ReplaceMarker(ref result, "GraySpecifications", graySpecifications);
-                ReplaceMarker(ref result, "GraySpecificationsTotal", graySpecificationsLength.ToString());
+                ReplaceMarker(ref result, "GraySpecificationsLengths", graySpecificationsLengths);
+                ReplaceMarker(ref result, "GraySpecificationsTotal", graySpecificationsTotal.ToString());
 
                 ReplaceMarker(ref result, "YandexBuisenessCard", adv.YandexBuisenessCard ? "Да" : "Нет");
                 ReplaceMarker(ref result, "GreenUrl", adv.GreenUrl ? "Да(" + adv.TitleUrl + ")" : "Нет");
@@ -110,23 +112,26 @@ namespace FrequencyPageVisitor.Reports
             }
             else
             {
-                ReplaceMarker(ref result, "TitleLink", "-");
-                ReplaceMarker(ref result, "TitleLinkLength", "-");
-                ReplaceMarker(ref result, "TextAdvertisment", "-");
-                ReplaceMarker(ref result, "TextAdvertismentLength", "-");
+                ReplaceMarker(ref result, "TitleLink", "");
+                ReplaceMarker(ref result, "TitleLinkLength", "");
+                ReplaceMarker(ref result, "TextAdvertisment", "");
+                ReplaceMarker(ref result, "TextAdvertismentLength", "");
 
                 for (int i = 0; i < 4; i++)
                 {
                     var linknum = i + 1;
-                    ReplaceMarker(ref result, "FastLink" + linknum, "-");
-                    ReplaceMarker(ref result, "FastLinkLength" + linknum, "-");
+                    ReplaceMarker(ref result, "FastLink" + linknum, "");
+                    ReplaceMarker(ref result, "FastLinkLength" + linknum, "");
                 }
 
-                ReplaceMarker(ref result, "FastLinkTotal", "-");
-                ReplaceMarker(ref result, "YandexBuisenessCard", "-");
-                ReplaceMarker(ref result, "GreenUrl", "-");
-                ReplaceMarker(ref result, "IsUtm", "-");
-                ReplaceMarker(ref result, "YandexMarket", "-");
+                ReplaceMarker(ref result, "FastLinkTotal", "");
+                ReplaceMarker(ref result, "GraySpecifications", "");
+                ReplaceMarker(ref result, "GraySpecificationsLengths", "");
+                ReplaceMarker(ref result, "GraySpecificationsTotal", "");
+                ReplaceMarker(ref result, "YandexBuisenessCard", "");
+                ReplaceMarker(ref result, "GreenUrl", "");
+                ReplaceMarker(ref result, "IsUtm", "");
+                ReplaceMarker(ref result, "YandexMarket", "");
               }
             return result;
         }
