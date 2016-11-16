@@ -44,7 +44,7 @@ namespace FrequencyPageVisitor
                 var printer = new RivalListReportPrinter(report, Path.Combine(reportDir, "RivalListReport-{0}.html"));
                 printer.Print(GlobalSettings.VisitorSettings.RivalsOnPage);
 
-                var rivalReport = new RivalReport(yaPages, reportDir);
+                var rivalReport = new RivalReport2(yaPages, reportDir);
                 rivalReport.Print(reportDir);
             }
             catch (Exception ex)
