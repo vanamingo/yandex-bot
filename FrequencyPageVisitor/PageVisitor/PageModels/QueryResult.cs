@@ -12,6 +12,18 @@ namespace FrequencyPageVisitor.PageModels
         BottomAdvertisement,
         RegularItem
     }
+    public enum QResultTypeExtended
+    {
+        SP1,
+        SP2,
+        SP3,
+        G1,
+        G2,
+        G3,
+        G4,
+        G5,
+        RegularItem
+    }
 
     public class QueryResult
     {
@@ -86,8 +98,44 @@ namespace FrequencyPageVisitor.PageModels
         }
 
         public QResultType ResultType { get; set; }
+
+        public QResultTypeExtended GetQResultTypeExtended()
+        {
+            if (ResultType == QResultType.TopAdvertisement)
+            {
+                switch (ResultNumber)
+                {
+                    case 1:
+                        return QResultTypeExtended.SP1;
+                    case 2:
+                        return QResultTypeExtended.SP2;
+                    case 3:
+                        return QResultTypeExtended.SP3;
+                }
+            }
+
+            if (ResultType == QResultType.BottomAdvertisement)
+                switch (ResultNumber)
+                {
+                    case 1:
+                        return QResultTypeExtended.G1;
+                    case 2:
+                        return QResultTypeExtended.G2;
+                    case 3:
+                        return QResultTypeExtended.G3;
+                    case 4:
+                        return QResultTypeExtended.G4;
+                    case 5:
+                        return QResultTypeExtended.G5;
+                }
+
+            return QResultTypeExtended.RegularItem;
+        }
+
         [XmlIgnore]
         public int ResultNumber { get; set; }
+
+        
 
         public bool GreenUrl { get; set; }
 

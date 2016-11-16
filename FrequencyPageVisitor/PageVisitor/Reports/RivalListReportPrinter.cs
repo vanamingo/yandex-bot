@@ -87,10 +87,11 @@ namespace FrequencyPageVisitor.Reports
 
             for (int i = firstIndex; i <= lastIndex; i++)
             {
-                sb.AppendFormat("<td>{0}({1}/{2})</td>"
+                sb.AppendFormat("<td>{0}({1}/{2})[{3}]</td>"
                     , companies[i].TopAdvertismentsCount + companies[i].BottomAdvertismentsCount,
                     companies[i].TopAdvertismentsCount,
-                    companies[i].BottomAdvertismentsCount);
+                    companies[i].BottomAdvertismentsCount,
+                    companies[i].GetCompanyOrder());
             }
 
             sb.AppendLine("</tr>");
