@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using FrequencyPageVisitor.PageModels;
 using FrequencyPageVisitor.Settings;
@@ -18,7 +20,7 @@ namespace FrequencyPageVisitor.Visitor
             _settings = GlobalSettings.VisitorSettings;
         }
 
-        public List<YandexPage> CollectRequestResults()
+        public List<YandexPage> CollectRequestResults(string reportDir)
         {
             var queryCount = _settings.Queries.Count;
             Logger.WriteWhite("Начало обработки запросов. Кол-во: " + queryCount);
@@ -47,6 +49,10 @@ namespace FrequencyPageVisitor.Visitor
                 var query = queryElement;
                 yaPages.Add(GetResultPage(query, driver));
 
+                // TODO. Хотел реализовать скриншот экрана. 
+                // Не получилось - хром делает скриншот только отображаемого экрана. Фаерфокс умеет делать скриншот всей страницы. 
+                //MakeScreenshot("", driver, i, queryElement);
+
                 Thread.Sleep(delay);
             }
             if (!GlobalSettings.VisitorSettings.NewBrowserForQuery)
@@ -55,6 +61,23 @@ namespace FrequencyPageVisitor.Visitor
                 driver.Close();
             }
             return yaPages;
+        }
+
+
+        public void MakeScreenshot(string path, IWebDriver driver, int i, QueryElement queryElement)
+        {
+            var ss = ((ITakesScreenshot)driver).GetScreenshot();
+            var screenshotAsByteArray = ss.AsByteArray;
+
+            var screenshotName = Regex.Replace(queryElement.Query, "[^0-9a-zA-Z]+", "");
+            screenshotName = string.Format("{0}-{1}.jpg",i, screenshotName);
+
+            if (!Directory.Exists("Screenshots"))
+            {
+                Directory.CreateDirectory("Screenshots");
+            }
+
+            File.WriteAllBytes(Path.Combine(path,"Screenshots", screenshotName), screenshotAsByteArray);
         }
 
         private YandexPage GetResultPage(QueryElement query, IWebDriver driver)

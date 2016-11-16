@@ -32,7 +32,7 @@ namespace FrequencyPageVisitor
 
                 if (!GlobalSettings.VisitorSettings.DeserializeMode)
                 {
-                    yaPages = dataCollector.CollectRequestResults();
+                    yaPages = dataCollector.CollectRequestResults(reportDir);
                     Serialize(yaPages, Path.Combine(reportDir, "yaPages.xml"));
                 }
                 else
