@@ -1,0 +1,62 @@
+<html>
+
+<head>
+    <title></title>
+
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 1500px;
+            margin: auto;
+        }
+
+        TD, TH {
+            border: 1px solid black;
+            padding: 5px;
+            height: 25px;
+        }
+        .top-bold {
+            border-top: 4px solid black;
+        }
+        .bold {
+            font-weight: bold;
+        }
+
+        .group {
+            background-color: #93B4BF;
+        }
+
+        .green {
+            background-color: #71ba77;
+        }
+
+        .odd {
+            background-color: #e5e5e5;
+        }
+
+        .advCol {
+          
+              width: 540px;
+        }
+        .linkCol {
+            width: 135px;
+        }
+    </style>
+</head>
+<body>
+    <table>
+
+        <tr>
+            <td class='bold'>№пп</td>
+            <td class='bold'>Ключевой запрос</td>
+            <td class='bold'>Регион</td>
+            <td class='bold'>Частотность</td>
+            <td class='bold'>Сайт ссылка</td>
+            <td class='bold advCol' colspan="4">ОБЪЯВЛЕНИЕ</td>
+            <td class='bold' colspan="5">Длина текста</td>
+        </tr>
+
+        {Rows}
+    </table>
+</body>
+</html>
