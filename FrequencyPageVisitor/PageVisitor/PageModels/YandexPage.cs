@@ -11,14 +11,16 @@ namespace FrequencyPageVisitor.PageModels
     public class YandexPage
     {
         private readonly IWebDriver _driver;
+        private readonly RegionElement _region;
 
         public YandexPage()
         {
         }
 
-        public YandexPage(IWebDriver driver, QueryElement query)
+        public YandexPage(IWebDriver driver, QueryElement query, RegionElement region)
         {
             this._driver = driver;
+            _region = region;
             Query = query.Query;
             Frequency = query.Frequency;
             QueryGroup = query.Group;
@@ -30,7 +32,8 @@ namespace FrequencyPageVisitor.PageModels
 
         private void SearchRequest()
         {
-            var url = "https://yandex.ru/search/?text=" + Query; 
+            var regionParameter = _region != null ? "&rstr=-" + _region.Code : "";
+            var url = "https://yandex.ru/search/?text=" + Query + regionParameter; 
             _driver.Navigate().GoToUrl(url);
         }
 

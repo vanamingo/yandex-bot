@@ -86,6 +86,13 @@ namespace FrequencyPageVisitor.Settings
             get { return ((QueriesCollection)(base["Queries"])); }
             set { base["Queries"] = value; }
         }
+       
+        [ConfigurationProperty("Regions")]
+        public RegionCollection Regions
+        {
+            get { return ((RegionCollection)(base["Regions"])); }
+            set { base["Regions"] = value; }
+        }
 
         public List<QueryElement> QueriesList
         {
@@ -116,6 +123,28 @@ namespace FrequencyPageVisitor.Settings
             {
                 var b = value ;
                 b.Query = b.Query;
+            }
+        }
+    }
+
+    [ConfigurationCollection(typeof(RegionElement))]
+    public class RegionCollection : ConfigurationElementCollection
+    {
+        protected override ConfigurationElement CreateNewElement()
+        {
+            return new RegionElement();
+        }
+
+        protected override object GetElementKey(ConfigurationElement element)
+        {
+            return ((RegionElement)(element)).Code;
+        }
+
+        public RegionElement this[int idx]
+        {
+            get { return (RegionElement)BaseGet(idx); }
+            set
+            {
             }
         }
     }
@@ -158,6 +187,27 @@ namespace FrequencyPageVisitor.Settings
 
                 return GroupRaw.Split('/').ToList();
             }
+        }
+    }
+
+    public class RegionElement: ConfigurationElement
+    {
+        public RegionElement()
+        {
+        }
+
+        [ConfigurationProperty("Region")]
+        public string Region
+        {
+            get { return ((string)(base["Region"])); }
+            set { base["Region"] = value; }
+        }
+
+        [ConfigurationProperty("Code")]
+        public string Code
+        {
+            get { return ((string)(base["Code"])); }
+            set { base["Code"] = value; }
         }
     }
 }

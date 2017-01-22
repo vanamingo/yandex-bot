@@ -26,23 +26,21 @@ namespace FrequencyPageVisitor
             {
                 InitSettings();
                 ItitLogFile();
-                var driver = WebDriverProvider.GetWebDriver();
-                driver.Navigate().GoToUrl("http://fathunter.pro/cabinet");
-                driver.FindElement(By.Id("loginform-email")).SendKeys("svetlana.pelihova@mail.ru");
-                driver.FindElement(By.Id("loginform-password")).SendKeys("-jtiMJCNV5");
+                IWebDriver driver;
+                driver = GetWebDriver();
 
                 var button = driver.FindElement(By.TagName("button"));
                 button.Click();
                 //Thread.Sleep(30 * 1000);
 
-                var urls = GetUrls(driver);
+                var urls = GetUrls(driver).TakeWhile(url => !url.Contains("609")).ToList();
 
                 Logger.WriteGreen("Начало. Всего URL - " + urls.Count);
                 var i = 1;
                 foreach (var url in urls)
                 {
                     Logger.WriteWhite("Обработка страницы N - " + i + " - " + url);
-                    HandleUrl(driver, url);
+                    HandleUrl(driver, url, i);
                     i++;
                 }
 
@@ -85,6 +83,16 @@ namespace FrequencyPageVisitor
             Console.ReadKey();
         }
 
+        private static IWebDriver GetWebDriver()
+        {
+            IWebDriver driver;
+            driver = WebDriverProvider.GetWebDriver();
+            driver.Navigate().GoToUrl("http://fathunter.pro/cabinet");
+            driver.FindElement(By.Id("loginform-email")).SendKeys("svetlana.pelihova@mail.ru");
+            driver.FindElement(By.Id("loginform-password")).SendKeys("-jtiMJCNV5");
+            return driver;
+        }
+
         private static IList<string> GetUrls(IWebDriver driver)
         {
             driver.Navigate().GoToUrl("http://fathunter.pro/cabinet/tickets");
@@ -92,7 +100,7 @@ namespace FrequencyPageVisitor
             return links.ToList();
         }
 
-        private static void HandleUrl(IWebDriver driver, string url)
+        private static void HandleUrl(IWebDriver driver, string url, int num)
         {
             var page = new FatTaskPage(driver, url);
 
@@ -102,12 +110,12 @@ namespace FrequencyPageVisitor
                 Directory.CreateDirectory(FatReportsFolder);
             }
 
-            SavePage(FatReportsFolder, page);
+            SavePage(page, num);
         }
 
-        private static void SavePage(string fatReportsFolder, FatTaskPage page)
+        private static void SavePage(FatTaskPage page, int num)
         {
-            var reportFolder = Path.Combine("FatReportsFolder", page.Title);
+            var reportFolder = Path.Combine("FatReportsFolder", num + " - " +  page.Title);
             if (!Directory.Exists(reportFolder))
             {
                 Directory.CreateDirectory(reportFolder);

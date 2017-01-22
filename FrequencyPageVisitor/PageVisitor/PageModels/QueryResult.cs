@@ -49,6 +49,14 @@ namespace FrequencyPageVisitor.PageModels
             YandexMarket = GetYandexMarket();
         }
 
+        [XmlIgnore]
+        public string TitleLinkWithoutCompanyUrl {
+            get
+            {
+                return GetTitleLinkWithoutCompanyUrl().Trim();
+            }
+        }
+
         public string YandexMarket { get; set; }
 
         private string GetYandexMarket()
@@ -161,11 +169,20 @@ namespace FrequencyPageVisitor.PageModels
             }
         }
 
-        public string GetTitleLink()
+        private string GetTitleLink()
         {
             return GetElementText(".organic__url");
         }
-        public string GetTitleHref()
+        private string GetTitleLinkWithoutCompanyUrl()
+        {
+            // Удаление URL из заголовка типа
+            // Не платит страховая по осаго ? / va-reshenie.ru
+            //var titleLink = GetTitleLink();
+
+
+            return TitleLink.Replace(" / " + CompanySite, "");
+        }
+        private string GetTitleHref()
         {
             var element = _webElement.FindElements(By.CssSelector(".organic__url"));
 
@@ -177,9 +194,9 @@ namespace FrequencyPageVisitor.PageModels
             return element[0].GetAttribute("href");
         }
 
-        public string GetTitleUrl()
+        private string GetTitleUrl()
         {
-            return GetElementText(".organic__subtitle");
+            return GetElementText(".organic__subtitle .organic__path");
         }
 
         private string GetElementText(string cssSelector)
@@ -199,12 +216,12 @@ namespace FrequencyPageVisitor.PageModels
             return element[0].Text;
         }
 
-        public string GetTextAdvertisment()
+        private string GetTextAdvertisment()
         {
-            return GetElementText(".organic__content-wrapper");
+            return GetElementText(".organic__content-wrapper .text-container");
         }
 
-        public List<string> GetFastLinks()
+        private List<string> GetFastLinks()
         {
             var links = _webElement.FindElements(By.CssSelector(".sitelinks__item"));
 
@@ -216,7 +233,7 @@ namespace FrequencyPageVisitor.PageModels
             return links.Select(l => l.Text).ToList();
         }
 
-        public List<string> GetGraySpecifications()
+        private List<string> GetGraySpecifications()
         {
             // Под данный селектор попадают как уточнения, так и контактная инфо. 
             var grayBlocks = _webElement.FindElements(By.CssSelector(".serp-meta2_type_gray"));
@@ -247,7 +264,7 @@ namespace FrequencyPageVisitor.PageModels
         ///// <summary>
         ///// Наличие контактной информации
         ///// </summary>
-        public bool GetYandexBuisenessCard()
+        private bool GetYandexBuisenessCard()
         {
             var grayBlocks = _webElement.FindElements(By.CssSelector(".serp-meta2_type_gray"));
 
@@ -266,12 +283,12 @@ namespace FrequencyPageVisitor.PageModels
         ///// <summary>
         ///// Наличие отображаемой ссылки
         ///// </summary>
-        public bool GetGreenUrl()
+        private bool GetGreenUrl()
         {
             return GetTitleUrl().Contains("/");
         }
 
-        public QResultType GetResultType()
+        private QResultType GetResultType()
         {
             var cssClass = _webElement.GetAttribute("class");
             if (cssClass == null || !cssClass.Contains("serp-adv-item"))

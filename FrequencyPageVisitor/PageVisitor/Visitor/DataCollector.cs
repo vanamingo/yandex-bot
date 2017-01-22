@@ -20,9 +20,15 @@ namespace FrequencyPageVisitor.Visitor
             _settings = GlobalSettings.VisitorSettings;
         }
 
-        public List<YandexPage> CollectRequestResults(string reportDir)
+        public List<YandexPage> CollectRequestResults(string reportDir, RegionElement region)
         {
             var queryCount = _settings.Queries.Count;
+
+            if (region != null)
+            {
+                Logger.WriteGreen(region.Region + " - " + region.Code);
+            }
+
             Logger.WriteWhite("Начало обработки запросов. Кол-во: " + queryCount);
 
             var delay = _settings.DelayInSeconds*1000;
@@ -47,7 +53,7 @@ namespace FrequencyPageVisitor.Visitor
                 var queryElement = _settings.Queries[i];
                 Logger.WriteWhite(string.Format("({0} из {1}){2}", i+1, queryCount, queryElement.Query));
                 var query = queryElement;
-                yaPages.Add(GetResultPage(query, driver));
+                yaPages.Add(GetResultPage(query, driver, region));
 
                 // TODO. Хотел реализовать скриншот экрана. 
                 // Не получилось - хром делает скриншот только отображаемого экрана. Фаерфокс умеет делать скриншот всей страницы. 
@@ -80,10 +86,10 @@ namespace FrequencyPageVisitor.Visitor
             File.WriteAllBytes(Path.Combine(path,"Screenshots", screenshotName), screenshotAsByteArray);
         }
 
-        private YandexPage GetResultPage(QueryElement query, IWebDriver driver)
+        private YandexPage GetResultPage(QueryElement query, IWebDriver driver, RegionElement region)
         {
             //var driver = WebDriverProvider.GetWebDriver();
-            var yaPage = new YandexPage(driver, query);
+            var yaPage = new YandexPage(driver, query, region);
             //driver.Close();
             return yaPage;
         }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using FrequencyPageVisitor.PageModels;
 using FrequencyPageVisitor.Reports.Helpers;
+using FrequencyPageVisitor.Settings;
 
 namespace FrequencyPageVisitor.Reports
 {
@@ -12,17 +13,19 @@ namespace FrequencyPageVisitor.Reports
     {
         private readonly List<YandexPage> _yaPages;
         private readonly string _reportDir;
+        private readonly RegionElement _region;
         private readonly string _htmlRootTemplate;
         private readonly string _htmlRowTemplate;
         public List<CompanyAdverisment> Companies { get; set; }
 
-        public RivalReport2(List<YandexPage> yaPages, string reportDir)
+        public RivalReport2(List<YandexPage> yaPages, string reportDir, RegionElement region)
         {
              _htmlRootTemplate = File.ReadAllText("HTMLTemplates/ReportRoot.html");
              _htmlRowTemplate = File.ReadAllText("HTMLTemplates/ReportRow.html");
 
             _yaPages = yaPages;
             _reportDir = reportDir;
+            _region = region;
             Companies = CompaniesProvider.GetCompanies(yaPages);
         }
 
@@ -72,7 +75,7 @@ namespace FrequencyPageVisitor.Reports
             var result = _htmlRowTemplate.ToString();
             ReplaceMarker(ref result, "RowNum", rowNum.ToString());
             ReplaceMarker(ref result, "QueryText", yaPage.Query);
-            ReplaceMarker(ref result, "Region", "");
+            ReplaceMarker(ref result, "Region", _region != null ? _region.Region : "");
             ReplaceMarker(ref result, "Frequency", yaPage.Frequency);
             ReplaceMarker(ref result, "CompanyName", company.CompanyName);
             
@@ -80,7 +83,7 @@ namespace FrequencyPageVisitor.Reports
             if (adv != null)
             {
                 ReplaceMarker(ref result, "TitleLink", adv.TitleLink);
-                ReplaceMarker(ref result, "TitleLinkLength", adv.TitleLink.Length.ToString());
+                ReplaceMarker(ref result, "TitleLinkLength", adv.TitleLinkWithoutCompanyUrl.Length.ToString());
 
                 ReplaceMarker(ref result, "TextAdvertisment", adv.TextAdvertisment);
                 ReplaceMarker(ref result, "TextAdvertismentLength", adv.TextAdvertisment.Length.ToString());

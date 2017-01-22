@@ -13,6 +13,11 @@ namespace PageVisitor.Visitor
     {
         private readonly IWebDriver _driver;
 
+        private IJavaScriptExecutor JavaScriptExecutor
+        {
+            get { return (IJavaScriptExecutor) _driver; }
+        }
+
         public PageVisitor(IWebDriver driver)
         {
             _driver = driver;
@@ -65,10 +70,33 @@ namespace PageVisitor.Visitor
 
         public void HightlightTheElement(IWebElement elementWithOurAdvertisement)
         {
-            var js = (IJavaScriptExecutor)_driver;
-            js.ExecuteScript("arguments[0].setAttribute('style', 'border:2px solid red')", elementWithOurAdvertisement);
+            JavaScriptExecutor.ExecuteScript("arguments[0].setAttribute('style', 'border:2px solid red')", elementWithOurAdvertisement);
         }
 
+        public void AddTimeInfoToThePage()
+        {
+            var timeInfo = String.Format("Время запроса: {0}", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"));
+            var script = string.Format(@"
+var myDiv = document.createElement('div');
+myDiv.innerText = '{0}';
+
+myDiv.style.color = 'red';
+myDiv.style['font-size'] = '17px';
+myDiv.style['margin-top'] = '45px';
+
+
+var body = document.getElementsByTagName('body')[0];
+var firstChild = body.children[0];
+
+body.insertBefore(myDiv, firstChild);
+
+", timeInfo);
+
+
+            var js = (IJavaScriptExecutor)_driver;
+            js.ExecuteScript(script);
+
+        }
         public void Close()
         {
             _driver.Close();

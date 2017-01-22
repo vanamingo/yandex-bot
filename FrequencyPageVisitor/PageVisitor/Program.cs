@@ -14,38 +14,27 @@ namespace FrequencyPageVisitor
 {
     class Program
     {
+        private static DateTime _startDateTime;
+
         static void Main(string[] args)
         {
+            _startDateTime = DateTime.Now;
+
             try
             {
                 InitSettings();
-                if (GlobalSettings.VisitorSettings.WriteLogs)
+
+                if (GlobalSettings.VisitorSettings.Regions.Count == 0)
                 {
-                    ItitLogFile();
-                }
-
-                var reportDir = CreateReportFolder();
-
-                var dataCollector = new DataCollector();
-
-                List<YandexPage> yaPages;
-
-                if (!GlobalSettings.VisitorSettings.DeserializeMode)
-                {
-                    yaPages = dataCollector.CollectRequestResults(reportDir);
-                    Serialize(yaPages, Path.Combine(reportDir, "yaPages.xml"));
+                    HandleRegion(null);
                 }
                 else
                 {
-                    yaPages = DeSerialize();
+                    foreach (var region in GlobalSettings.VisitorSettings.Regions)
+                    {
+                        HandleRegion((RegionElement)region);
+                    }
                 }
-
-                var report = new RivalListReport(yaPages);
-                var printer = new RivalListReportPrinter(report, Path.Combine(reportDir, "RivalListReport-{0}.html"));
-                printer.Print(GlobalSettings.VisitorSettings.RivalsOnPage);
-
-                var rivalReport = new RivalReport2(yaPages, reportDir);
-                rivalReport.Print(reportDir);
             }
             catch (Exception ex)
             {
@@ -56,6 +45,37 @@ namespace FrequencyPageVisitor
             PrintPressAnyKey();
 
             Console.ReadKey();
+        }
+
+        private static void HandleRegion(RegionElement region)
+        {
+            if (GlobalSettings.VisitorSettings.WriteLogs)
+            {
+                ItitLogFile();
+            }
+
+            var reportDir = CreateReportFolder(region);
+
+            var dataCollector = new DataCollector();
+
+            List<YandexPage> yaPages;
+
+            if (!GlobalSettings.VisitorSettings.DeserializeMode)
+            {
+                yaPages = dataCollector.CollectRequestResults(reportDir, region);
+                Serialize(yaPages, Path.Combine(reportDir, "yaPages.xml"));
+            }
+            else
+            {
+                yaPages = DeSerialize();
+            }
+
+            var report = new RivalListReport(yaPages);
+            var printer = new RivalListReportPrinter(report, Path.Combine(reportDir, "RivalListReport-{0}.html"));
+            printer.Print(GlobalSettings.VisitorSettings.RivalsOnPage);
+
+            var rivalReport = new RivalReport2(yaPages, reportDir, region);
+            rivalReport.Print(reportDir);
         }
 
         private static void InitSettings()
@@ -112,9 +132,13 @@ namespace FrequencyPageVisitor
             }
         }
 
-        public static string CreateReportFolder()
+        public static string CreateReportFolder(RegionElement region)
         {
-            var path = Path.Combine("Reports", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"));
+            var path = 
+                region == null ?
+                Path.Combine("Reports", _startDateTime.ToString("yyyy-MM-dd_HH-mm-ss")):
+                Path.Combine("Reports", _startDateTime.ToString("yyyy-MM-dd_HH-mm-ss"), region.Region);
+
             Directory.CreateDirectory(path);
             return path;
         }

@@ -45,6 +45,7 @@ namespace PageVisitor.Visitor
                     elementsWithOurAdvertisement
                         .ForEach(_visitor.HightlightTheElement);
 
+                    _visitor.AddTimeInfoToThePage();
                     _visitor.MakeScreenshot(_query);
 
                     Logger.WriteGreen("Объявление найдено");
