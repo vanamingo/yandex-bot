@@ -62,9 +62,16 @@ namespace FrequencyPageVisitor.Reports
         private string GetRows(CompanyAdverisment adv )
         {
             var sb = new StringBuilder();
-            for (int i = 1; i <= _yaPages.Count; i++)
+            // страницы на которых (не)присутствуют объявление компании
+            var yaPagesWithAdvertisment = _yaPages.Where(p => adv.Advertisments.ContainsKey(p.Query)).ToList();
+            var yaPagesWithOutAdvertisment = _yaPages.Where(p => !adv.Advertisments.ContainsKey(p.Query)).ToList();
+
+            // в листе сперва идут элементы с объявлениями. Потом - пустые 
+            var unionYaList = yaPagesWithAdvertisment.Concat(yaPagesWithOutAdvertisment).ToList();
+
+            for (int i = 1; i <= unionYaList.Count; i++)
             {
-                sb.AppendLine(GetRow(_yaPages[i - 1],  adv ,i));
+                sb.AppendLine(GetRow(unionYaList[i - 1], adv, i));
             }
 
             return sb.ToString();

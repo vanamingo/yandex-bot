@@ -169,6 +169,12 @@ namespace FrequencyPageVisitor.PageModels
             }
         }
 
+        [XmlIgnore]
+        public bool IsNotEmpty
+        {
+            get { return !string.IsNullOrEmpty(TitleLink); }
+        }
+
         private string GetTitleLink()
         {
             return GetElementText(".organic__url");
