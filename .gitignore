@@ -1,0 +1,12 @@
+/PageVisitor/*.suo
+/PageVisitor/PageVisitor/obj
+/PageVisitor/PageVisitor/bin
+/PageVisitor/PageVisitor/PageVisitor.csproj.user
+/PageVisitor/PageVisitor/PageVisitor_TemporaryKey.pfx
+/PageVisitor/PageVisitor/publish
+/PageVisitor/PageVisitor/Properties/app.manifest
+/FrequencyPageVisitor/PageVisitor/bin
+/FrequencyPageVisitor/PageVisitor/obj
+/FrequencyPageVisitor/PageVisitor/publish
+/FatHunterParser/PageVisitor/bin
+/FatHunterParser/PageVisitor/obj

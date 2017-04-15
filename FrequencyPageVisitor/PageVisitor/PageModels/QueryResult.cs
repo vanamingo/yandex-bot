@@ -242,7 +242,8 @@ namespace FrequencyPageVisitor.PageModels
         private List<string> GetGraySpecifications()
         {
             // Под данный селектор попадают как уточнения, так и контактная инфо. 
-            var grayBlocks = _webElement.FindElements(By.CssSelector(".serp-meta2_type_gray"));
+            //var grayBlocks = _webElement.FindElements(By.CssSelector(".serp-meta2_type_gray"));
+            var grayBlocks = _webElement.FindElements(By.CssSelector(".serp-meta2__line"));
 
             if (grayBlocks.Count == 0)
             {
@@ -272,7 +273,7 @@ namespace FrequencyPageVisitor.PageModels
         ///// </summary>
         private bool GetYandexBuisenessCard()
         {
-            var grayBlocks = _webElement.FindElements(By.CssSelector(".serp-meta2_type_gray"));
+            var grayBlocks = _webElement.FindElements(By.CssSelector(".serp-meta2__line"));
 
             if (grayBlocks.Count == 0)
             {
